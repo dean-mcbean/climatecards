@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Protest+Riot&display=swap');
+
+html {
+  height: 100%;
+  font-family: Cabin, sans-serif;
+  user-select: none;
+}
+
+body {
+  background-color: var(--background-color);
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+
+:root {
+  --background-color: #fff4df;
+  --green: #C4DFAA;
+  --aqua: #90C8AC;
+  --blue: #73A9AD;
+  --red: #FFB996;
+  --orange: #FFCF81;
+  --yellow: #FDFFAB;
+
+  --green-shade: #adc79a;
+
+  --dark-background-color: #EBD9B4;
+  --dark-blue: #638889;
+  --dark-green: #9DBC98;
+
+  --day-blue: #b4fffb;
+  --night-blue: #445475;
+
+  --brown: #8B5D33;
+}
