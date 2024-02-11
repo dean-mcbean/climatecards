@@ -9,26 +9,15 @@ export const gamePanel = (time: number) => css`
   justify-content: center;
 `
 
-export const topLeftUI = css`
+export const topUI = css`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 1rem;
   padding: 1.5rem;
   position: absolute;
-  top: 0;
-  left: 0;
-`
-
-export const topRightUI = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  position: absolute;
-  top: 0;
-  right: 0;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
 `

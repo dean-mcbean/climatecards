@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import { Building } from "../../../../context/GameContextProvider/GameContextProvider";
 
 export const waveContainer = (wavePosition: number) => css`
   background-color: var(--blue);
@@ -7,7 +6,7 @@ export const waveContainer = (wavePosition: number) => css`
   position: absolute;
   left: ${wavePosition * 100}%;
   transition: left 0.2s;
-  top: -20px;
+  top: -10px;
   bottom: 0;
   border-radius: 10px 10px 0 0;
   overflow: hidden;

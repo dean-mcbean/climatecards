@@ -10,7 +10,7 @@ export const applyToTiles = (tiles: TileGrid, setTiles: (tiles: TileGrid) => voi
   setTiles(newTiles);
 }
 
-export const getAdjacentTiles = (tiles: TileGrid, tile: Tile) => {
+export const getAdjacentTilesFromTiles = (tiles: TileGrid, tile: Tile) => {
   const adjacentTiles = [];
   const { x, y } = tile;
   const directions = [-1, 0, 1];
@@ -36,3 +36,11 @@ export const getAdjacentTiles = (tiles: TileGrid, tile: Tile) => {
 
   return adjacentTiles;
 };
+
+export const checkAnyTilesMatch = (tiles: TileGrid, test: (tile: Tile) => boolean) => {
+  return tiles.some((row) => row.some((tile) => test(tile)));
+}
+
+export const checkAllTilesMatch = (tiles: TileGrid, test: (tile: Tile) => boolean) => {
+  return tiles.every((row) => row.every((tile) => test(tile)));
+}

@@ -25,15 +25,21 @@ body {
   --red: #FFB996;
   --orange: #FFCF81;
   --yellow: #FDFFAB;
+  --purple: #D6A2E8;
+  --pink: #FFB7C5;
+  --brown: #8B5D33;
+  --gray: #B4A7A7;
+
+  --bright-red: #ff5353;
+  --bright-gold: #ffe13a;
 
   --green-shade: #adc79a;
 
   --dark-background-color: #EBD9B4;
   --dark-blue: #638889;
   --dark-green: #9DBC98;
+  --dark-yellow: #fdffa4;
 
   --day-blue: #b4fffb;
   --night-blue: #445475;
-
-  --brown: #8B5D33;
 }

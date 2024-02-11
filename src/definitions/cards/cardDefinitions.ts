@@ -1,8 +1,9 @@
 
 import { GameContextType } from "../../context/GameContextProvider/GameContextProvider";
+import { Tile } from "../tiles/tileDefinitions";
 import { gainFunding } from "./cardActions";
 import { CardList } from "./cardTypes";
-import { allowUserToBuild, tileIsBesideBuildingType, tileIsEmpty, tileIsSeaside } from "./cardUtils";
+import { allowUserToBuild, checkAnyTilesInContextMatch, tileIsBesideBuildingType, tileIsEmpty, tileIsSeaside } from "./cardUtils";
 
 export const allCards: CardList = [
   {
@@ -28,8 +29,12 @@ export const allCards: CardList = [
     action: (gameContext: GameContextType) => {
       allowUserToBuild(gameContext, {
         type: "house",
-        health: 2
+        health: 2,
+        income: 1
       }, (tile) => tileIsEmpty(tile) && tileIsSeaside(gameContext)(tile))
+    },
+    validCheck: (gameContext: GameContextType) => {
+      return checkAnyTilesInContextMatch(gameContext, (tile: Tile) => tileIsEmpty(tile) && tileIsSeaside(gameContext)(tile))
     }
   },
   {
@@ -42,7 +47,8 @@ export const allCards: CardList = [
     action: (gameContext: GameContextType) => {
       allowUserToBuild(gameContext, {
         type: "house",
-        health: 2
+        health: 2,
+        income: 1
       }, (tile) => tileIsEmpty(tile) && !tileIsSeaside(gameContext)(tile))
     }
   },
@@ -56,8 +62,12 @@ export const allCards: CardList = [
     action: (gameContext: GameContextType) => {
       allowUserToBuild(gameContext, {
         type: "business",
-        health: 2
+        health: 2,
+        income: 2
       }, (tile) => tileIsEmpty(tile) && tileIsBesideBuildingType(gameContext, "house")(tile))
+    },
+    validCheck: (gameContext: GameContextType) => {
+      return checkAnyTilesInContextMatch(gameContext, (tile: Tile) => tileIsEmpty(tile) && tileIsBesideBuildingType(gameContext, "house")(tile))
     }
   },
 ]

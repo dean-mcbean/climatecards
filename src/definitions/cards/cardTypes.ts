@@ -8,6 +8,7 @@ export type Card = {
   type: string;
   cost: number;
   action?: (gameContext: GameContextType) => void;
+  validCheck?: (gameContext: GameContextType) => boolean;
 }
 
 export type CardList = Card[]

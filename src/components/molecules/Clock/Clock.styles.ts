@@ -34,11 +34,11 @@ export const foreground = css`
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  background-color: var(--yellow);
+  background-color: var(--orange);
   z-index: 10;
   border-radius: 50%;
-  width: 55%;
-  height: 55%;
+  width: 25%;
+  height: 25%;
   border: 3px solid var(--orange);
   color: var(--night-blue);
 `

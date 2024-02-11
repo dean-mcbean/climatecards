@@ -19,7 +19,6 @@ export default function Clock({card}: {card?: Card}) {
         </div>
       </div>
       <div css={foreground}>
-        <Typography variant="h3">{day}</Typography>
       </div>
     </div>
   );

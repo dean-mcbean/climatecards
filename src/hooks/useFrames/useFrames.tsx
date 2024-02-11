@@ -1,33 +1,34 @@
+import { skip } from 'node:test';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 
-const fps = 10;
+export function useFrames(fastForwarding: boolean, paused: boolean) {
+  const skippedFrames = useMemo(() => fastForwarding ? 10 : 0, [fastForwarding]);
+  const [frames, setFrames] = useState(0);
+  const timeoutWaiter = useRef<NodeJS.Timeout[]>([]);
 
-export function useFrames(fpsOverride: number = fps) {
-  const [outFrames, setOutFrames] = useState(0);
-  const frameRef = useRef(0);
-  const timeoutWaiter = useRef<NodeJS.Timeout>();
-  const lastTimeRef = useRef(performance.now());
-  const fpsIntervalRef = useMemo(() => 1000 / fpsOverride, [fpsOverride]);
+  const clearTimeouts = () => {
+    timeoutWaiter.current.forEach((timeout) => {
+      clearTimeout(timeout);
+    });
+    timeoutWaiter.current = [];
+  }
 
   const update = useCallback(() => {
-    const now = performance.now();
-    const elapsed = now - lastTimeRef.current;
+    setFrames((frames) => frames + 1 + skippedFrames);
 
-    if (elapsed > fpsIntervalRef) {
-      lastTimeRef.current = now - (elapsed % fpsIntervalRef);
-      frameRef.current += 1;
-      setOutFrames(frameRef.current);
-    }
-
-    timeoutWaiter.current = setTimeout(() => {
-      requestAnimationFrame(update);
-    }, fpsIntervalRef);
-  }, [fpsIntervalRef]);
+    timeoutWaiter.current.push(
+      setTimeout(() => {
+        requestAnimationFrame(update);
+      }, 100)
+    );
+  }, [skippedFrames]);
 
   useEffect(() => {
-    clearTimeout(timeoutWaiter.current);
-    update();
-  }, [update]);
+    if (!paused) update();
+    return () => {
+      clearTimeouts();
+    };
+  }, [update, paused]);
 
-  return outFrames;
+  return frames;
 }

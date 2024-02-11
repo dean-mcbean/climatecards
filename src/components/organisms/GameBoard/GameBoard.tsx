@@ -9,19 +9,6 @@ import { Wave } from "./Wave/Wave";
 const runMorningEvents = (context: GameContextType) => {
   console.log(`Good morning! It's day ${context.day}`);
 
-  const { cityTiles, alterFunding } = context;
-
-  // Funding cycle
-  cityTiles.forEach((row) => {
-    row.forEach((tile) => {
-      if (tile.building?.type === 'house') {
-        alterFunding(1);
-      } else if (tile.building?.type === 'business') {
-        alterFunding(2);
-      }
-    });
-  });
-
 }
 
 export default function GameBoard() {
@@ -54,10 +41,10 @@ export default function GameBoard() {
           )}
         </div>
         <div css={seaBase}>
-          {context.waves.map((waveRow, index) => 
-            <div css={seaRow} key={index}>
-              {waveRow.map((wave, index) => 
-                wave !== null ? <Wave key={index} wavePosition={wave}></Wave> : null
+          {context.waves.map((waveRow, row_index) => 
+            <div css={seaRow} key={row_index}>
+              {Object.entries(waveRow).map(([wave_id, waveSpeed]) =>
+                <Wave key={wave_id} waveSpeed={waveSpeed} row={row_index} wave_id={wave_id} />
               )}
             </div>
           )}

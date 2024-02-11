@@ -9,7 +9,7 @@ export default function Funding() {
 
   return (
     <div css={fundingContainer}>
-      ${funding}k
+      ${Math.floor(funding * 10) / 10}k
     </div>
   );
 }

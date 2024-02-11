@@ -1,5 +1,6 @@
-import { css } from "@emotion/react";
-import { Building } from "../../../../context/GameContextProvider/GameContextProvider";
+import { css, keyframes } from "@emotion/react";
+import { Building } from "../../../../definitions/tiles/tileDefinitions";
+import Color from "colorjs.io";
 
 export const tileContainer = css`
   display: flex;
@@ -65,16 +66,59 @@ export const tileSelector = css`
   }
 `
 
-export const tileWaterLevel = (waterLevel: number) => css`
+
+export const tileWaterLevel = (waterLevel: number, visible: boolean) => {
+
+  const darkBlue = new Color('#638889');
+  const lightBlue = new Color('#8cd7d0');
+  const color = Color.mix(lightBlue, darkBlue, waterLevel / 5);
+  
+  return css`
+    background-color: ${color.toString()};
+    transition: height 1s ease-in-out;
+    opacity: 0.8;
+    height: ${visible ? 17.5 : 0}%;
+  }
+  `
+}
+
+export const waterLevelContainer = css`
   position: absolute;
   bottom: 0;
+  left: 0;
   width: 100%;
-  height: ${waterLevel*60}%;
-  background-color: #73a9ad;
-  opacity: 0.8;
+  height: 100%;
   z-index: 2;
-  border-radius: 5px 5px 0 0;
-  -webkit-transition: height 2s;
-  transition: height 2s;
-}
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  overflow: hidden;
+`
+
+export const sunkContainer = css`
+  position: absolute;
+  bottom: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  z-index: 1;
+  background-color: var(--yellow);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 2px;
+  box-sizing: border-box;
+  box-shadow: inset -8px -8px 0 8px #e6e49a, 0 0 0 1px #0001;
+`
+
+export const sunkContent = css`
+  background-color: #8cd7d0;
+  border: 1px solid #7dbcbe;
+  box-sizing: border-box;
+  height: 80%;
+  border-radius: 14px;
+  box-shadow: inset -8px -4px 0 4px #7dbcbe, 0 0 0 1px #e6e49a;
 `
