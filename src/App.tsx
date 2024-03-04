@@ -1,21 +1,37 @@
 /** @jsxImportSource @emotion/react */
 
-import { appContainer } from "./App.styles";
-import CardPanel from "./components/organisms/CardPanel/CardPanel";
-import GamePanel from "./components/organisms/GamePanel/GamePanel";
-import { GameContextProvider } from "./context/GameContextProvider/GameContextProvider";
-import { VFXContextProvider } from "./context/VFXContextProvider/VFXContextProvider";
+import { appContainer, upperAppContainer } from "./App.styles";
+import { CardhandPanel } from "./components/organisms/CardhandPanel/CardhandPanel";
+import { Gameboard } from "./components/organisms/Gameboard/Gameboard";
+import { UIOverlay } from "./components/organisms/UIOverlay/UIOverlay";
+import { CardProvider } from "./context/CardProvider";
+import { GameboardProvider } from "./context/GameboardProvider";
+import { GameloopProvider } from "./context/GameloopProvider";
+import { HazardProvider } from "./context/HazardProvider";
+import { TimeProvider } from "./context/TimeProvider";
+import { UIProvider } from "./context/UIProvider";
 
 
 export default function App() {
   return (
-    <VFXContextProvider>
-      <GameContextProvider>
-        <div css={appContainer}>
-          <GamePanel />
-          <CardPanel />
-        </div>
-      </GameContextProvider>
-    </VFXContextProvider>
+    <TimeProvider>
+      <GameboardProvider>
+        <UIProvider>
+          <HazardProvider>
+            <CardProvider>
+              <GameloopProvider>
+                <div css={appContainer}>
+                  <div css={upperAppContainer}>
+                    <Gameboard />
+                    <UIOverlay />
+                  </div>
+                  <CardhandPanel />
+                </div>
+              </GameloopProvider>
+            </CardProvider>
+          </HazardProvider>
+        </UIProvider>
+      </GameboardProvider>
+    </TimeProvider>
   );
 }

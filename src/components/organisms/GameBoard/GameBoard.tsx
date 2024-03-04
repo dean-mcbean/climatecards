@@ -1,55 +1,33 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useEffect } from "react";
-import { beachBase, beachRow, gameBoard, gameBoardBase, groundBase, landBase, seaBase, seaRow, tileRow } from "./GameBoard.styles";
-import { GameContext, GameContextType } from "../../../context/GameContextProvider/GameContextProvider";
-import { Tile } from "./Tile/Tile";
-import { Wave } from "./Wave/Wave";
+import { useGameboardContext } from "../../../context/GameboardProvider";
+import { depthItem, gameBoardDepth, gameboardContainer, gameboardContainerParent, rowContainer, gameboardContainerOverlay } from "./Gameboard.styles";
+import { GameboardTile } from "./GameboardTile/GameboardTile";
 
-const runMorningEvents = (context: GameContextType) => {
-  console.log(`Good morning! It's day ${context.day}`);
-
-}
-
-export default function GameBoard() {
-  const context = useContext(GameContext);
-
-  useEffect(() => {
-    if (context.day > 0) runMorningEvents(context)
-  }, [context.day]);
-
+export const Gameboard = () => {
+  const { grid } = useGameboardContext();
+  
+  if (grid.length == 0) {
+    return null;
+  }
   return (
-    <div css={gameBoard}>
-      <div css={gameBoardBase}>
-        <div css={groundBase}></div>
-        <div css={landBase}>
-          {context.cityTiles.map((tileList, index) => {
-            return (
-              <div css={tileRow} key={index}>
-                {tileList.map((tile, index) => {
-                  return (
-                    <Tile key={index} tile={tile} />
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-        <div css={beachBase}>
-          {context.cityTiles.map((_, index) => 
-            <div css={beachRow} key={index}></div>
-          )}
-        </div>
-        <div css={seaBase}>
-          {context.waves.map((waveRow, row_index) => 
-            <div css={seaRow} key={row_index}>
-              {Object.entries(waveRow).map(([wave_id, waveSpeed]) =>
-                <Wave key={wave_id} waveSpeed={waveSpeed} row={row_index} wave_id={wave_id} />
-              )}
+    <div css={gameboardContainerOverlay}>
+      <div css={gameboardContainerParent}>
+        <div css={gameboardContainer}>
+          {grid.map((row, rowIndex) => (
+            <div key={rowIndex} css={rowContainer}>
+              {row.map((gridItem, colIndex) => (
+                <GameboardTile key={colIndex} gridItem={gridItem} />
+              ))}
             </div>
-          )}
+          ))}
+        </div>
+        <div css={gameBoardDepth}>
+          {grid[grid.length - 1].map((gridItem, colIndex) => (
+            <div key={colIndex} css={depthItem(gridItem)}/>
+          ))}
         </div>
       </div>
     </div>
   );
-}
+};
