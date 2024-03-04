@@ -1,5 +1,7 @@
 import { css } from "@emotion/react";
 import { palette } from "../../../theme/palette";
+import Color from "colorjs.io";
+import { HazardEvent } from "../../../types/events";
 
 
 export const TurnStep = (turn:number, index:number, dayRange:number) => css`
@@ -79,35 +81,49 @@ export const subtitle = css`
   margin-top: -10px;
 `;
 
-export const eventStartPointer = (startOrEnd: string) => css`
-  color: ${startOrEnd == 'start' ? palette.blue(600) : palette.yellow(200)};
-  padding: 0px;
-  border-radius: 50px;
-  font-size: 0.6rem;
-  font-weight: 600;
-  text-shadow: 0 1px 0px ${palette.blue(600)};
-  z-index: 1;
-  height: 24px;
-  width: 24px;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: transform 0.1s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const eventStartPointer = (event: HazardEvent, turn: number) => {
+  const myLocation = (turn - event.start_turn) / (event.end_turn - event.start_turn);
+  //const distBetweenPointers = 1 / (event.end_turn - event.start_turn);
+  const startColor = new Color(palette.blue(650));
+  const endColor = new Color(palette.blue(540));
+  const colorRange = startColor.range(endColor, { space: "lch" });
+  const color = colorRange(myLocation).toString();
 
-  svg {
-    width: 100%;
-    height: 100%;
-  }
+  const isStartOrEnd = (turn - event.start_turn) == 0 || (turn - event.end_turn) == 0;
+  
+  return css`
+    color: ${color};
+    padding: 0px;
+    border-radius: 50px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-shadow: 0 1px 0px ${palette.blue(600)};
+    z-index: 1;
+    height: 36px;
+    width: 36px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    ${isStartOrEnd ? '': 'pointer-events: none;'}
+    width: 4rem;
 
-  &:hover {
-    transform: scale(1.1);
-    .event-context {
-      opacity: 1;
+    svg {
+      width: 100%;
+      height: 100%;
+      ${!isStartOrEnd ? 'transform: scale(0.7);' : ''}
     }
-  }
-`;
+
+    &:hover {
+      transform: scale(1.1);
+      .event-context {
+        opacity: 1;
+      }
+    }
+  `;
+}
 
 export const turnNum = css`
   

@@ -7,8 +7,9 @@ export const UIContainer = css`
   right: 0;
   top: 0;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   padding: 4px;
   box-sizing: border-box;
 `;

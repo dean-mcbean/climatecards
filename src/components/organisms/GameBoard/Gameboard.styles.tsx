@@ -26,7 +26,7 @@ export const gameboardContainerOverlay = css`
   position: relative;
   width: 100%;
   flex-grow: 1;
-  padding-top: 120px;
+  padding-top: 150px;
   background: ${palette.gradient.skyBlue()};
 `;
 
