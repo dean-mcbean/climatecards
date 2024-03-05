@@ -57,10 +57,13 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
 
   useEffect(() => {
     if (upcomingEvents.length === 0) {
-      const randomTurns = Math.floor(Math.random() * 3) + 6;
+      let min_turn = turn;
+      if (currentEvent) {
+        min_turn = currentEvent.end_turn;
+      }
+      const randomTurns = Math.floor(Math.random() * 5) + 2 + min_turn;
       const newEvent: HazardEvent = randomHazardEvent({
-          start_turn: turn + randomTurns,
-          end_turn: turn + randomTurns + 3,
+          start_turn: randomTurns,
         });
       setUpcomingEvents((prevEvents) => [...prevEvents, newEvent]);
     }

@@ -1,3 +1,4 @@
+import { buildingBuilder } from "../../data/buildings/buildingBuilder";
 import { GridItem } from "../../types/gameboard";
 import { getNeighbouringTiles } from "./board_filters";
 
@@ -28,7 +29,7 @@ export const generateVillage = ({population, grid}: GenerateVillageProps): GridI
     
     let houseOptions: GridItem[] = []
     for (let i = 0; i < remainingPopulation; i++) {
-      newGrid[houseItem.y][houseItem.x].building = "house";
+      newGrid[houseItem.y][houseItem.x].building = buildingBuilder('house');
       remainingPopulation -= 1;
       houseOptions = getNeighbouringTiles({gridItem: houseItem, grid: newGrid, filter: (tile) => !tile.isWater && !tile.isRaised && !tile.building});
       console.log(houseItem, houseOptions)

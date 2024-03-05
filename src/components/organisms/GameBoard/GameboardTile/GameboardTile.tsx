@@ -1,24 +1,84 @@
 /** @jsxImportSource @emotion/react */
 
+import { useTimeContext } from "../../../../context/TimeProvider";
 import { GridItem } from "../../../../types/gameboard";
-import { GameboardTileContainer, buildingContainer, buildingShadow, gameboardTile, gameboardTileDepth } from "./GameboardTile.styles";
+import { GameboardTileContainer, buildingContainer, buildingHealth, buildingHealthPip, buildingShadow, gameboardTile, gameboardTileDepth, inundationContainer, inundationCountdown, warningContainer, waveContainer } from "./GameboardTile.styles";
 import { FaHouse } from 'react-icons/fa6';
-
+import { MdTsunami } from "react-icons/md";
+import { MdOutlineWaves } from "react-icons/md";
+import { GiEdgeCrack } from "react-icons/gi";
+import { useHazardContext } from "../../../../context/HazardProvider";
+import { useEffect } from "react";
 
 export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
 
+  const { turn } = useTimeContext();
+  const { resolveGridItemWarning, reduceInundation, reduceBuildingHealth } = useHazardContext();
 
+  if (gridItem.building) console.log(gridItem.building);
   const building = gridItem.building ? (
     <div css={buildingContainer}>
-      {gridItem.building == 'house' ? <FaHouse /> : null}
+      <div css={buildingHealth(gridItem)}>
+        {gridItem.building.maxHealth && 
+        Array.from({ length: gridItem.building.maxHealth }, (_, index) => (
+          <div key={index} css={buildingHealthPip(gridItem, index)} />
+        ))}
+      </div>
+      {gridItem.building.type == 'house' ? <FaHouse /> : null}
       <div css={buildingShadow(gridItem)}></div>
     </div>
   ) : null;
 
+  const wave = gridItem.waveStrength ? (
+    <div key={turn} css={waveContainer}>
+      <MdTsunami />
+    </div>
+  ) : null;
+
+  const inundation = gridItem.inundation ? (
+    <div css={inundationContainer}>
+      <div css={inundationCountdown(gridItem.inundation)}>{gridItem.inundation}</div>
+    </div>
+  ) : null;
+  
+  let warning = gridItem.warning ? (
+    <div css={warningContainer(gridItem.warning)}>
+      {gridItem.warning.type == 'flooding' ? <MdOutlineWaves /> : gridItem.warning.type == 'landslide' ? <GiEdgeCrack /> : null}
+    </div>
+  ) : null;
+
+  // End the warning if it's the current turn
+  if (gridItem.warning) {
+    console.log(gridItem.warning);
+    if (gridItem.warning.endTurn === turn) {
+      console.log('remove warning');
+      resolveGridItemWarning(gridItem);
+      warning = null;
+    }
+  }
+
+  // Daily checks
+  useEffect(() => {
+    if (gridItem.warning) {
+      if (gridItem.warning.endTurn === turn) {
+        resolveGridItemWarning(gridItem);
+      }
+    }
+    if (gridItem.inundation) {
+      if (gridItem.inundation === 1) {
+        reduceBuildingHealth(gridItem);
+      }
+      reduceInundation(gridItem);
+    }
+  }, [turn]);
+
   return (
     <div css={GameboardTileContainer(gridItem)}>
       <div css={gameboardTile(gridItem)}>
+        {wave}
         {building}
+        {inundation}
+        {warning}
       </div>
       <div css={gameboardTileDepth(gridItem)}>
       </div>

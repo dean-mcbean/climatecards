@@ -12,7 +12,7 @@ export const generateTerrain = ({landInset, waterInset, gridDimensions}: Generat
   for (let i = 0; i < gridDimensions[1]; i++) {
     const row: GridItem[] = [];
     for (let j = 0; j < gridDimensions[0]; j++) {
-      row.push({ x: j, y: i, isWater: j >= landInset });
+      row.push({ x: j, y: i, isWater: j >= landInset, inundation: 0 });
     }
     newGrid.push(row);
   }
@@ -47,7 +47,6 @@ export const generateTerrain = ({landInset, waterInset, gridDimensions}: Generat
     } else if (distance > landInset + 1) {
       distance = previousDepth + Math.floor(Math.random() * 2) - 1;
     }
-    console.log(distance, previousDepth)
     for (let j = 0; j < distance; j++) {
       newGrid[i][j].isRaised = true;
     }

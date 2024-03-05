@@ -53,6 +53,9 @@ class Palette {
   yellow(shade: number = 500, opacity?: number) {
     return shadeOf("#f5d491", shade, opacity);
   }
+  red(shade: number = 500, opacity?: number) {
+    return shadeOf("#d45d79", shade, opacity);
+  }
 
   get gradient() {
     return {
