@@ -15,7 +15,7 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
   const { turn } = useTimeContext();
   const { resolveGridItemWarning, reduceInundation, reduceBuildingHealth } = useHazardContext();
 
-  if (gridItem.building) console.log(gridItem.building);
+  if (gridItem.warning) console.log(gridItem.warning);
   const building = gridItem.building ? (
     <div css={buildingContainer}>
       <div css={buildingHealth(gridItem)}>
@@ -35,11 +35,11 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
     </div>
   ) : null;
 
-  const inundation = gridItem.inundation ? (
-    <div css={inundationContainer}>
+  const inundation =  (
+    <div css={inundationContainer(gridItem.inundation)}>
       <div css={inundationCountdown(gridItem.inundation)}>{gridItem.inundation}</div>
     </div>
-  ) : null;
+  );
   
   let warning = gridItem.warning ? (
     <div css={warningContainer(gridItem.warning)}>

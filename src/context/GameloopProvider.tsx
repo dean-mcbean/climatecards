@@ -33,9 +33,7 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Core gameloop logic here
-    if (turn % 2 === 0) {
-      drawCard();
-    }
+    
 
   }, [turn]);
 

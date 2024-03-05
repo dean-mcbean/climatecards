@@ -71,6 +71,16 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
           return { ...gridItem, warning: inundationWarning};
         });
       });
+    } else if (currentEvent?.type === "earthquake") {
+      const landslideSpaces = getMatchingGridItems((item) => {
+        return !item.isWater && Math.random() > 0.95;
+      });
+      const landslideWarning = gridItemWarningBuilder("landslide", turn + 1);
+      landslideSpaces.forEach((landslideSpace) => {
+        updateGridItem(landslideSpace.y, landslideSpace.x, (gridItem) => {
+          return { ...gridItem, warning: landslideWarning};
+        });
+      });
     }
   }
   , [turn]);
@@ -80,7 +90,7 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
       if (gridItem.warning.endTurn === turn) {
         updateGridItem(gridItem.y, gridItem.x, (item) => {
           const result = { ...item, warning: undefined };
-          switch (gridItem.warning?.type) {
+          switch (item.warning?.type) {
             case "flooding":
               result.inundation = 3;
               break;
@@ -89,6 +99,9 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
                 result.isRaised = false;
               } else {
                 result.isWater = true;
+                if (result.building) {
+                  result.building = undefined;
+                }
               }
               break;
           }

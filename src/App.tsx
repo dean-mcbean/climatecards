@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { appContainer, upperAppContainer } from "./App.styles";
+import { WeatherEffectOverlay } from "./components/molecules/WeatherEffectOverlay/WeatherEffectOverlay";
 import { CardhandPanel } from "./components/organisms/CardhandPanel/CardhandPanel";
 import { Gameboard } from "./components/organisms/Gameboard/Gameboard";
 import { UIOverlay } from "./components/organisms/UIOverlay/UIOverlay";

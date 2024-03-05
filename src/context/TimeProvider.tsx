@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect } from "react";
 import { HazardEvent } from "../types/events";
 import { randomHazardEvent } from "../data/events/eventBuilder";
+import { palette } from "../theme/palette";
 
 
 type TimeContextType = {
@@ -33,7 +34,7 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
         if (nextEvent.start_turn === prevTurn) {
           setCurrentEvent(nextEvent);
           setUpcomingEvents((prevEvents) => prevEvents.slice(1));
-          console.log('set')
+          palette.setFilter(nextEvent.color, 0.1);
         }
       }
 
@@ -42,6 +43,7 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
       if (currentEvent !== null && currentEvent.end_turn === prevTurn) {
         setPastEvents((prevEvents) => [...prevEvents, currentEvent]);
         setCurrentEvent(null);
+        palette.clearFilter();
       }
 
       return prevTurn;

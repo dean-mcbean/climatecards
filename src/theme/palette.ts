@@ -12,16 +12,28 @@ function shadeOf(color: string, shade: number, opacity?: number) {
   if (shade === 500) {
     cssColor = colorObj.toString();
   } else if (shade < 500) {
-    const shift = (500 - shade) / 500
-    cssColor = colorObj.range(white, {space: "lch"})(shift * 0.9).lighten(shift * 0.1).toString();
+    const shift = (500 - shade) / 500;
+    cssColor = colorObj.range(white, { space: "lch" })(shift * 0.9).lighten(shift * 0.1).toString();
   } else {
-    const shift = (shade - 500) / 500
-    cssColor = colorObj.range(black, {space: "lch"})(shift * 0.7).darken(shift * 0.3).toString();
+    const shift = (shade - 500) / 500;
+    cssColor = colorObj.range(black, { space: "lch" })(shift * 0.7).darken(shift * 0.3).toString();
   }
+
+  // Mix filter color if filterStrength is set
+  if (palette.filter && palette.filterStrength > 0) {
+    const filterColor = palette.filter;
+    const mixColor = new Color(cssColor);
+    cssColor = mixColor.mix(filterColor, palette.filterStrength).toString();
+  }
+
   return cssColor;
 }
 
+
 class Palette {
+  filter: Color | null = null;
+  filterStrength: number = 0;
+
   primary(shade: number = 500, opacity?: number) {
     return shadeOf("#444266", shade, opacity);
   }
@@ -55,6 +67,15 @@ class Palette {
   }
   red(shade: number = 500, opacity?: number) {
     return shadeOf("#d45d79", shade, opacity);
+  }
+
+  setFilter(color: string, strength: number) {
+    this.filter = new Color(color);
+    this.filterStrength = strength;
+  }
+  clearFilter() {
+    this.filter = null;
+    this.filterStrength = 0;
   }
 
   get gradient() {

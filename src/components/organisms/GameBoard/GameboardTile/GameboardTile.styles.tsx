@@ -46,6 +46,7 @@ export const gameboardTile = (gridItem: GridItem) => css`
   z-index: 2;
   position: relative;
   top: ${gridItem.isRaised ? '-20px' : gridItem.isWater ? '0' : '-10px'};
+  transition: top 0.5s ease-in-out, background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
 `;
 
 export const gameboardTileDepth = (gridItem: GridItem) => css`
@@ -58,6 +59,7 @@ export const gameboardTileDepth = (gridItem: GridItem) => css`
   font-size: 12px;
   background-color: ${gridItemColor(gridItem, 580)};
   z-index: 1;
+  transition: background-color 0.2s ease-in-out;
 `;
 
 export const buildingShadow = (gridItem: GridItem) => css`
@@ -68,6 +70,7 @@ export const buildingShadow = (gridItem: GridItem) => css`
   z-index: 3;
   border-radius: 50px;
   bottom: 20%;
+  transition: background-color 0.2s ease-in-out;
 `;
 
 const waveMove = keyframes`
@@ -112,6 +115,7 @@ const warningFlash = keyframes`
   }
 `;
 
+
 export const warningContainer = (warning: GridItemWarning) => css`
   position: absolute;
   width: 100%;
@@ -133,7 +137,7 @@ export const warningContainer = (warning: GridItemWarning) => css`
   }
 `;
 
-export const inundationContainer = css`
+export const inundationContainer = (inundation: number) => css`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -144,6 +148,9 @@ export const inundationContainer = css`
   border: 2px solid ${palette.blue(600, 0.2)};
   background-color: ${palette.blue(500, 0.7)};
   box-sizing: border-box;
+  opacity: ${inundation > 0 ? 1 : 0};
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;
 
   svg {
     width: 60%;
@@ -164,7 +171,7 @@ export const inundationCountdown = (inundation: number) => css`
   color: ${palette.blue(700)};
   z-index: 430;
   padding: 0.5rem;
-  background-color: ${palette.blue(600, 0.2)};
+  background-color: #77c1b2;
   box-sizing: border-box;
   font-size: 1rem;
   font-weight: 800;
@@ -187,4 +194,5 @@ export const buildingHealthPip = (gridItem: GridItem, index: number) => css`
   height: 6px;
   background-color: ${gridItem.building && gridItem.building?.health > index ? palette.green(600) : palette.red(600)};
   border-radius: 50%;
+  transition: background-color 0.2s ease-in-out;
 `;
