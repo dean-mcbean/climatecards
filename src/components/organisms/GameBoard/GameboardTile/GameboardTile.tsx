@@ -2,29 +2,46 @@
 
 import { useTimeContext } from "../../../../context/TimeProvider";
 import { GridItem } from "../../../../types/gameboard";
-import { GameboardTileContainer, buildingContainer, buildingHealth, buildingHealthPip, buildingShadow, gameboardTile, gameboardTileDepth, inundationContainer, inundationCountdown, warningContainer, waveContainer } from "./GameboardTile.styles";
-import { FaHouse } from 'react-icons/fa6';
+import { GameboardTileContainer, buildingContainer, buildingHealth, buildingHealthPip, buildingShadow, gameboardTile, gameboardTileDepth, inundationBuilding, inundationContainer, inundationCountdown, selectionContainer, warningContainer, waveContainer } from "./GameboardTile.styles";
 import { MdTsunami } from "react-icons/md";
 import { MdOutlineWaves } from "react-icons/md";
 import { GiEdgeCrack } from "react-icons/gi";
 import { useHazardContext } from "../../../../context/HazardProvider";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useGameboardContext } from "../../../../context/GameboardProvider";
+import { useGameloopContext } from "../../../../context/GameloopProvider";
+import { useUIContext } from "../../../../context/UIProvider";
+import { ImCross } from "react-icons/im";
+import { LuConstruction } from "react-icons/lu";
+import { Countdown } from "../../../atoms/Countdown/Countdown";
+import { palette } from "../../../../theme/palette";
+
 
 export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
 
   const { turn } = useTimeContext();
+  const { gameState } = useGameloopContext();
   const { resolveGridItemWarning, reduceInundation, reduceBuildingHealth } = useHazardContext();
+  const { hoveredTile, selectableGameboardTilePositions } = useUIContext();
+  const {tileWidth, updateGridItem} = useGameboardContext();
+  const [countdown, setCountdown] = useState({
+    value: 0,
+    max: 0,
+    color: 'black',
+    backgroundColor: 'white'
+  });
 
   if (gridItem.warning) console.log(gridItem.warning);
-  const building = gridItem.building ? (
+  const building = gridItem.building && !gridItem.inundation ? (
     <div css={buildingContainer}>
-      <div css={buildingHealth(gridItem)}>
+      {gridItem.building.constructionTurns == 0 && <div css={buildingHealth(gridItem)}>
         {gridItem.building.maxHealth && 
         Array.from({ length: gridItem.building.maxHealth }, (_, index) => (
           <div key={index} css={buildingHealthPip(gridItem, index)} />
         ))}
       </div>
-      {gridItem.building.type == 'house' ? <FaHouse /> : null}
+      }
+      {gridItem.building.constructionTurns == 0 ? gridItem.building.icon : <LuConstruction />}
       <div css={buildingShadow(gridItem)}></div>
     </div>
   ) : null;
@@ -37,11 +54,15 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
 
   const inundation =  (
     <div css={inundationContainer(gridItem.inundation)}>
-      <div css={inundationCountdown(gridItem.inundation)}>{gridItem.inundation}</div>
+      <div css={inundationCountdown(gridItem.inundation)}>
+      </div>
+      <div css={inundationBuilding(gridItem.inundation)}>
+        {gridItem.building ? gridItem.building.icon : null}
+      </div>
     </div>
   );
   
-  let warning = gridItem.warning ? (
+  let warning = gridItem.warning && gameState.status == 'idle' ? (
     <div css={warningContainer(gridItem.warning)}>
       {gridItem.warning.type == 'flooding' ? <MdOutlineWaves /> : gridItem.warning.type == 'landslide' ? <GiEdgeCrack /> : null}
     </div>
@@ -57,28 +78,85 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
     }
   }
 
+  const isSelectable = useMemo(() => {
+    return selectableGameboardTilePositions.some((pos) => pos.gridItem.x === gridItem.x && pos.gridItem.y === gridItem.y);
+  }, [selectableGameboardTilePositions]);
+
+  // Selection decor if user is selecting
+  let selection = <div css={selectionContainer('hidden')}>
+  </div>;
+  if (gameState.status === "building") {
+    if (isSelectable){
+      if (hoveredTile && hoveredTile.x === gridItem.x && hoveredTile.y === gridItem.y) {
+        selection = (
+        <div css={selectionContainer('highlight')}>
+        </div>
+        );
+      } else {
+        selection = (
+          <div css={selectionContainer('outline')}>
+          </div>
+        );
+      }
+    } else {
+      selection = (
+        <div css={selectionContainer('dim')}>
+          <ImCross />
+        </div>
+      );
+    }
+  }
+
   // Daily checks
   useEffect(() => {
+    // Progress Warnings
     if (gridItem.warning) {
       if (gridItem.warning.endTurn === turn) {
         resolveGridItemWarning(gridItem);
       }
     }
+    // Progress Inundation
     if (gridItem.inundation) {
       if (gridItem.inundation === 1) {
         reduceBuildingHealth(gridItem);
       }
       reduceInundation(gridItem);
     }
+    // Progress Building Construction
+    if (gridItem.building) {
+      const constructionTurns = gridItem.building.constructionTurns;
+      const building = gridItem.building;
+      if (constructionTurns > 0) {
+        updateGridItem(gridItem.y, gridItem.x, (gridItem: GridItem) => {
+          return { ...gridItem, building: { ...building, constructionTurns: constructionTurns - 1 } };
+        });
+      }
+    }
+
   }, [turn]);
 
+  useEffect(() => {
+    // Update Countdown 
+    if (gridItem.building) {
+      const constructionTurns = gridItem.building.constructionTurns;
+      setCountdown({
+        value: constructionTurns,
+        max: gridItem.building.maxConstructionTurns,
+        color: palette.green(600),
+        backgroundColor: palette.brown()
+      });
+    }
+  }, [gridItem.building]);
+
   return (
-    <div css={GameboardTileContainer(gridItem)}>
-      <div css={gameboardTile(gridItem)}>
+    <div css={GameboardTileContainer(tileWidth)}>
+      <div className="gameboard-tile" aria-rowindex={gridItem.y} aria-colindex={gridItem.x} css={gameboardTile(gridItem)}>
         {wave}
         {building}
         {inundation}
         {warning}
+        {selection}
+        <Countdown {...countdown}/>
       </div>
       <div css={gameboardTileDepth(gridItem)}>
       </div>

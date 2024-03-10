@@ -3,11 +3,9 @@ import { palette } from "../../../theme/palette";
 
 export const CardhandPanelContainer = css`
   width: 100%;
-  height: 250px;
+  height: 300px;
   padding: 12px;
   box-sizing: border-box;
-  background-color: ${palette.primary()};
-  border-top: 2px solid ${palette.primary(300)};
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -25,12 +23,9 @@ export const cardhandPanelInner = css`
   max-width: 100%;
   width: 100%;
   overflow-x: auto;
-  padding: 0.5rem;
+  padding: 1rem;
   box-sizing: border-box;
-  border-radius: 8px;
-  background: ${palette.gradient.etherealPrimary()};
-  border: 1px solid ${palette.primary(400)};
-  box-shadow: inset 0 8px 30px -8px ${palette.primary(700, 0.4)}, 0 0 8px 0 ${palette.primary(600)};
+  overflow-y: hidden;
 `;
 
 export const nextTurnButton = css`
@@ -38,23 +33,92 @@ export const nextTurnButton = css`
   justify-content: center;
   align-items: center;
   text-align: center;
-  line-height: 1.2;
-  width: 4rem;
-  margin-top: -2px;
-  position: absolute;
-  top: -28px;
-  height: 40px;
-  background-color: ${palette.primary(540)};
+  background-color: ${palette.blue(500)};
+  border: 1px solid ${palette.blue(530)};
   color: ${palette.primary(100)};
-  border: 2px solid ${palette.primary(300)};
-  border-bottom: none;
+  box-shadow: 0 0 8px 0px ${palette.blue(480, 0.2)}, inset 0 0 14px 7px ${palette.blue(520, 1)};
   border-radius: 80px;
   padding: 0 1.5rem;
+  padding-top: 3px;
   cursor: pointer;
   transition: background-color 0.1s ease-in-out, padding 0.2s ease-in-out;
+  font-family: "Baloo Bhaina 2", cursive;
+  font-size: 1.0rem;    
+  font-weight: 600;
+  text-shadow: 0 1px 0px ${palette.blue(600)};
+  height: 100%;
 
   &:hover {
-    background-color: ${palette.primary(600)};
-    padding: 0 2rem;
+    background-color: ${palette.blue(520)};
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 `;
+
+export const dashboardContainer = css`
+  position: absolute;
+  top: -40px;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  pointer-events: none;
+
+  > * {
+    pointer-events: all;
+  }
+`;
+
+export const moneyButton = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 24px;
+  min-width: 24px;
+  padding: 0 8px 0 9px;
+  border-radius: 80px;
+  box-sizing: border-box;
+  gap: 0.4rem;
+  border: 2px solid #d27f33;
+  font-family: "Baloo Bhaina 2", cursive;
+  color: #d27f33;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1.2rem;
+
+  span {
+    padding-top: 5px;
+  }
+  svg {
+    margin-right: -3px;
+    margin-left: -2px;
+  }
+`
+
+export const populationButton = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 24px;
+  min-width: 24px;
+  padding: 0 8px;
+  border-radius: 80px;
+  box-sizing: border-box;
+  gap: 0.4rem;
+  border: 2px solid #8b3438;
+  font-family: "Baloo Bhaina 2", cursive;
+  color: #8b3438;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1.2rem;
+
+  span {
+    padding-top: 5px;
+  }
+`

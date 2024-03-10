@@ -5,10 +5,13 @@ export type GridItemWarning = {
 }
 
 export type Building = {
-  type: "house" | "school" | "hospital" | "office";
+  type: "house";
   isRaised?: boolean;
   health: number;
   maxHealth: number;
+  icon: JSX.Element;
+  constructionTurns: number;
+  maxConstructionTurns: number;
 }
 
 export type GridItem = {

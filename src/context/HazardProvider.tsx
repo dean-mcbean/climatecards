@@ -1,12 +1,13 @@
 import React, { ReactNode, useEffect } from "react";
 import { useTimeContext } from "./TimeProvider";
 import { useGameboardContext } from "./GameboardProvider";
-import { get } from "http";
 import { gridItemWarningBuilder } from "../data/gridItemWarnings/gridItemWarningBuilder";
 import { GridItem } from "../types/gameboard";
+import { getNeighbouringTiles } from "../utils/gameboard/board_filters";
+import { randomInt } from "../utils/generic";
 
 
-type HazardContextType = {
+export type HazardContextType = {
   resolveGridItemWarning: (gridItem: GridItem) => void;
   reduceInundation: (gridItem: GridItem) => void;
   reduceBuildingHealth: (gridItem: GridItem, damage?: number) => void;
@@ -23,7 +24,7 @@ export const HazardContext = React.createContext<HazardContextType>({
 export const HazardProvider = ({ children }: {children: ReactNode}) => {
 
   const { turn, currentEvent } = useTimeContext();
-  const { getMatchingGridItems, updateGridItem, gridDimensions } = useGameboardContext();
+  const { grid, getMatchingGridItems, updateGridItem, gridDimensions, updateRandomGridItems } = useGameboardContext();
 
   useEffect(() => {
     const waves = getMatchingGridItems((item) => !!item.waveStrength);
@@ -53,33 +54,24 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
 
     // Add waves if during a storm
     if (currentEvent?.type === "tsunami") {
-      const newWaves = getMatchingGridItems((item) => {
-        return item.x == gridDimensions[0] - 1 && !!item.isWater && !item.waveStrength && Math.random() > 0.5;
+      updateRandomGridItems(randomInt(1,2), (gridItem) => {
+        return { ...gridItem, waveStrength: 1 };
+      }, (gridItem) => {
+        return gridItem.x === gridDimensions[0] - 1 && !!gridItem.isWater && !gridItem.waveStrength;
       });
-      newWaves.forEach((wave) => {
-        updateGridItem(wave.y, wave.x, (gridItem) => {
-          return { ...gridItem, waveStrength: 1 };
-        });
-      });
+
     } else if (currentEvent?.type === "storm") {
-      const floodingSpaces = getMatchingGridItems((item) => {
-        return !item.isWater && !item.inundation && Math.random() > 0.95;
+      updateRandomGridItems(randomInt(1,3), (gridItem) => {
+        return { ...gridItem, warning: gridItemWarningBuilder("flooding", turn + 1) };
+      }, (gridItem) => {
+        return !gridItem.isWater && !gridItem.inundation;
       });
-      const inundationWarning = gridItemWarningBuilder("flooding", turn + 1);
-      floodingSpaces.forEach((floodingSpace) => {
-        updateGridItem(floodingSpace.y, floodingSpace.x, (gridItem) => {
-          return { ...gridItem, warning: inundationWarning};
-        });
-      });
+
     } else if (currentEvent?.type === "earthquake") {
-      const landslideSpaces = getMatchingGridItems((item) => {
-        return !item.isWater && Math.random() > 0.95;
-      });
-      const landslideWarning = gridItemWarningBuilder("landslide", turn + 1);
-      landslideSpaces.forEach((landslideSpace) => {
-        updateGridItem(landslideSpace.y, landslideSpace.x, (gridItem) => {
-          return { ...gridItem, warning: landslideWarning};
-        });
+      updateRandomGridItems(randomInt(1,2), (gridItem) => {
+        return { ...gridItem, warning: gridItemWarningBuilder("landslide", turn + 1) };
+      }, (gridItem) => {
+        return getNeighbouringTiles({gridItem, grid, filter: (tile) => !!tile.isWater}).length > 0 && !gridItem.isWater;
       });
     }
   }
@@ -99,9 +91,8 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
                 result.isRaised = false;
               } else {
                 result.isWater = true;
-                if (result.building) {
-                  result.building = undefined;
-                }
+                result.building = undefined;
+                result.inundation = 0;
               }
               break;
           }

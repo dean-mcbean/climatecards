@@ -63,7 +63,7 @@ export const currentTurnContainer = css`
   padding: 0.75rem 2rem 0.75rem 2rem;
   border-radius: 5px;
   background-color: ${palette.blue(500)};
-  border: 2px solid #96ecea;
+  border: 2px solid ${palette.lightBlue(500)};
   font-family: "Baloo Bhaina 2", cursive;
   font-size: 1.6rem;
   font-weight: 800;

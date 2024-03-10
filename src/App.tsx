@@ -22,6 +22,7 @@ export default function App() {
             <CardProvider>
               <GameloopProvider>
                 <div css={appContainer}>
+                  <WeatherEffectOverlay opacity="0.3" zIndex="0"/>
                   <div css={upperAppContainer}>
                     <Gameboard />
                     <UIOverlay />

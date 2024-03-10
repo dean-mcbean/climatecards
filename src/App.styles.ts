@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { palette } from "./theme/palette";
 
 export const appContainer = css`
   display:flex;
@@ -7,6 +8,8 @@ export const appContainer = css`
   align-items: stretch;
   height: 100%;
   position: relative;
+  
+  background: ${palette.gradient.skyBlue()};
   `
 
 export const upperAppContainer = css`

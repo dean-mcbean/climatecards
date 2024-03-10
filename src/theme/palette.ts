@@ -35,7 +35,7 @@ class Palette {
   filterStrength: number = 0;
 
   primary(shade: number = 500, opacity?: number) {
-    return shadeOf("#444266", shade, opacity);
+    return shadeOf("#71cdc5", shade, opacity);
   }
   secondary(shade: number = 500, opacity?: number) {
     return shadeOf("#69cbc4", shade, opacity);
@@ -48,10 +48,13 @@ class Palette {
     return shadeOf("#eb9cbf", shade, opacity);
   }
   lightBlue(shade: number = 500, opacity?: number) {
-    return shadeOf("#d1eddd", shade, opacity);
+    return shadeOf("#96ecea", shade, opacity);
   }
   blue(shade: number = 500, opacity?: number) {
     return shadeOf("#71cdc5", shade, opacity);
+  }
+  darkBlue(shade: number = 500, opacity?: number) {
+    return shadeOf("#4d5778", shade, opacity);
   }
   grey(shade: number = 500, opacity?: number) {
     return shadeOf("#888", shade, opacity);

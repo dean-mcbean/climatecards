@@ -6,13 +6,24 @@ export function gridItemColor(gridItem: GridItem, shade: number = 500) {
   return gridItem.isWater ? palette.blue(shade) : gridItem.isRaised ? palette.green(shade * 1.1) : palette.green(shade);
 }
 
-export const GameboardTileContainer = (gridItem: GridItem) => css`
-  width: 50px;
-  height: 50px;
+export const GameboardTileContainer = (tileWidth: number) => css`
+  width: ${tileWidth}px;
+  height: ${tileWidth}px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+`;
+
+const buildingRaise = keyframes`
+  0% {
+    height: 0;
+    width: 0;
+  }
+  100% {
+    height: 50%;
+    width: 50%;
+  }
 `;
   
 export const buildingContainer = css`
@@ -21,15 +32,18 @@ export const buildingContainer = css`
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-end;
   z-index: 4;
+  box-sizing: border-box;
 
-  svg {
+  > svg {
     width: 50%;
     height: 50%;
+    position: absolute;
+    bottom: 25%;
     color: ${palette.brown()};
     z-index: 4;
+    animation: ${buildingRaise} 0.3s ease-in-out both;
   }
 `;
 
@@ -64,12 +78,12 @@ export const gameboardTileDepth = (gridItem: GridItem) => css`
 
 export const buildingShadow = (gridItem: GridItem) => css`
   position: absolute;
-  width: 50%;
-  height: 12px;
+  width: 55%;
+  height: 28%;
   background-color: ${gridItemColor(gridItem, 550)};
   z-index: 3;
   border-radius: 50px;
-  bottom: 20%;
+  bottom: 15%;
   transition: background-color 0.2s ease-in-out;
 `;
 
@@ -145,36 +159,46 @@ export const inundationContainer = (inundation: number) => css`
   justify-content: center;
   align-items: center;
   z-index: 5;
-  border: 2px solid ${palette.blue(600, 0.2)};
-  background-color: ${palette.blue(500, 0.7)};
   box-sizing: border-box;
   opacity: ${inundation > 0 ? 1 : 0};
   transition: opacity 0.2s ease-in-out;
   pointer-events: none;
 
   svg {
-    width: 60%;
-    height: 60%;
+    width: 50%;
+    height: 50%;
     color: ${palette.blue(600)};
     z-index: 42;
   }
 `;
 
 export const inundationCountdown = (inundation: number) => css`
-  border-radius: 50px;
+  border-radius: 16px;
   box-sizing: border-box;
-  height: 70%;
-  width: 70%;
+  height: ${inundation > 0 ? 60 + 10 * inundation : 0}%;
+  width: ${inundation > 0 ? 60 + 10 * inundation : 0}%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: ${palette.blue(700)};
   z-index: 430;
   padding: 0.5rem;
-  background-color: #77c1b2;
+  background-color: ${palette.blue(500, 0.6)};
   box-sizing: border-box;
   font-size: 1rem;
   font-weight: 800;
+  transition: height 0.2s ease-in-out, width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+  box-shadow: inset 0 0 4px 4px ${palette.blue(600, 0.4)};
+`;
+
+export const inundationBuilding = (inundation: number) => css`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 42;
 `;
 
 export const buildingHealth = (gridItem: GridItem) => css`
@@ -186,7 +210,8 @@ export const buildingHealth = (gridItem: GridItem) => css`
   align-items: flex-start;
   gap: 4px;
   z-index: 5;
-  padding-top: 0.5rem;
+  padding-top: 10%;
+  box-sizing: border-box;
 `;
 
 export const buildingHealthPip = (gridItem: GridItem, index: number) => css`
@@ -196,3 +221,51 @@ export const buildingHealthPip = (gridItem: GridItem, index: number) => css`
   border-radius: 50%;
   transition: background-color 0.2s ease-in-out;
 `;
+
+export const selectionContainer = (highlight: string) => {
+
+  let highlightStyle = css``;
+  switch (highlight) {
+    case 'highlight':
+      highlightStyle = css`
+      `;
+      break;
+    case 'outline':
+      highlightStyle = css`
+      `;
+      break;
+    case 'dim':
+      highlightStyle = css`
+        background-color: ${palette.red(500, 0.4)};
+        color: ${palette.red(500, 0.4)};
+      `;
+      break;
+    case 'hidden':
+      highlightStyle = css`
+        opacity: 0;
+        background-color: transparent;
+      `;
+      break;
+  }
+
+  
+  return css`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 6;
+  opacity: 1;
+  ${highlightStyle}
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: border 0.2s ease-in-out, background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+`;
+}

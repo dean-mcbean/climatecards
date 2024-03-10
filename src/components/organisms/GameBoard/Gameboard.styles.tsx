@@ -27,7 +27,6 @@ export const gameboardContainerOverlay = css`
   width: 100%;
   flex-grow: 1;
   padding-top: 150px;
-  background: ${palette.gradient.skyBlue()};
 `;
 
 export const gameBoardDepth = css`
@@ -38,14 +37,15 @@ export const gameBoardDepth = css`
   box-shadow: 0 16px 16px -12px #0004;
 `;
 
-export const depthItem = (gridItem: any) => css`
-  width: 50px;
-  height: 50px;
+export const depthItem = (gridItem: any, tileWidth: number) => css`
+  width: ${tileWidth}px;
+  height: ${tileWidth}px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 12px;
   background-color: ${gridItemColor(gridItem, 580)};
+  box-shadow: inset 0 -60px 45px -60px #0138;
 `;
 
 export const gameboardContainerParent = css`

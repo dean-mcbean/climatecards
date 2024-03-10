@@ -1,4 +1,5 @@
 import { GridItem } from "../../types/gameboard";
+import { getRandomItem } from "../generic";
 
 interface NeighbouringTilesProps {
   gridItem: GridItem;
@@ -17,4 +18,10 @@ export const getNeighbouringTiles = ({gridItem, grid, filter = ()=>true}: Neighb
   return neighbours
     .map((coords) => grid[coords.y]?.[coords.x])
     .filter((tile) => tile !== undefined && filter(tile));
+}
+
+
+export function getRandomTiles({grid, numItems, filter = ()=>true}: {grid: GridItem[][], numItems: number, filter?: (tile: GridItem) => boolean}): GridItem[] {
+  const list = grid.flat().filter(filter);
+  return getRandomItem({list, numItems});
 }

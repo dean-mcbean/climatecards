@@ -4,7 +4,7 @@ import { randomHazardEvent } from "../data/events/eventBuilder";
 import { palette } from "../theme/palette";
 
 
-type TimeContextType = {
+export type TimeContextType = {
   turn: number;
   nextTurn: () => void;
   upcomingEvents: HazardEvent[];
@@ -34,7 +34,7 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
         if (nextEvent.start_turn === prevTurn) {
           setCurrentEvent(nextEvent);
           setUpcomingEvents((prevEvents) => prevEvents.slice(1));
-          palette.setFilter(nextEvent.color, 0.1);
+          palette.setFilter(nextEvent.color, 0.05);
         }
       }
 

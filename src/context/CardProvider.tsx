@@ -2,11 +2,12 @@ import React, { ReactNode, useCallback, useEffect } from "react";
 import { Card } from "../types/cards";
 import { randomCardPreset } from "../data/cards/cardBuilder";
 
-type CardContextType = {
+export type CardContextType = {
   deck: Card[];
   hand: Card[];
   drawCard: () => void;
   initDeck: () => void;
+  removeCardFromHand: (card: Card) => void;
 };
 
 export const CardContext = React.createContext<CardContextType>({
@@ -14,6 +15,7 @@ export const CardContext = React.createContext<CardContextType>({
   hand: [],
   drawCard: () => {},
   initDeck: () => {},
+  removeCardFromHand: () => {}
 });
 
 export const CardProvider = ({ children }: { children: ReactNode }) => {
@@ -44,7 +46,11 @@ export const CardProvider = ({ children }: { children: ReactNode }) => {
     setDeck(newDeck);
   }, []);
 
-  const contextValue = { deck, hand, drawCard, initDeck };
+  const removeCardFromHand = useCallback((card: Card) => {
+    setHand((prevHand) => prevHand.filter((c) => c !== card));
+  }, []);
+
+  const contextValue = { deck, hand, drawCard, initDeck, removeCardFromHand };
 
   return (
     <CardContext.Provider value={contextValue}>
