@@ -37,7 +37,7 @@ const config: Configuration = {
   },
   output: {
     filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "../../www/resilient-cities"),
   },
   plugins: [
     new CopyWebpackPlugin({
