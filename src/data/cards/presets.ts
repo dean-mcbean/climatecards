@@ -1,40 +1,44 @@
 import { Card } from "../../types/cards";
+import { GridItem } from "../../types/gameboard";
 import { buildingBuilder } from "../buildings/buildingBuilder";
-import { buildAction } from "./actions";
+import { buildAction, drawCardAction, moneyAction } from "./actions";
 
 export const cardPresets: {[key: string]: Card} = {
   "1": {
-    id: 1,
     name: "Housing Development",
-    description: "More houses, more funding!",
-    cost: 2,
-    effect: "Build a house",
+    description: "Expand the community with new housing.",
+    cost: 4,
+    effect: "Builds a house.",
     building: buildingBuilder('house'),
     category: 'common',
     action: (contexts) => {
-      buildAction(contexts, cardPresets["1"]);
+      buildAction(contexts, cardPresets["1"], buildingBuilder('house'), 
+      (gridItem: GridItem) => {
+        return !gridItem.isWater && !gridItem.building
+      });
     }
   },
   "2": {
-    id: 2,
     name: "Fundraiser",
     description: "Raise funds from the community.",
     cost: 0,
-    effect: "This card does something else",
+    building: buildingBuilder('house'),
+    effect: "Immediately gain 5 funding.",
     category: 'common',
     action: (contexts) => {
       console.log("Raising funds");
+      moneyAction(contexts, cardPresets["2"], 5);
     }
   },
   "3": {
-    id: 3,
-    name: "Card 3",
-    description: "This is card 3",
-    cost: 3,
-    effect: "This card does something different",
+    name: "Field Research",
+    description: "Study the local environment.",
+    cost: 2,
+    effect: "Draw a random card.",
     category: 'common',
     action: (contexts) => {
       console.log("Card 3");
+      drawCardAction(contexts, cardPresets["3"]);
     }
   }
 }

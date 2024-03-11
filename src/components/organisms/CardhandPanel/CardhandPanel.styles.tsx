@@ -47,6 +47,8 @@ export const nextTurnButton = css`
   font-weight: 600;
   text-shadow: 0 1px 0px ${palette.blue(600)};
   height: 100%;
+  margin: 0 -10px;
+  z-index: 5;
 
   &:hover {
     background-color: ${palette.blue(520)};
@@ -63,7 +65,6 @@ export const dashboardContainer = css`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   width: 100%;
   box-sizing: border-box;
   pointer-events: none;
@@ -84,12 +85,12 @@ export const moneyButton = css`
   border-radius: 80px;
   box-sizing: border-box;
   gap: 0.4rem;
-  border: 2px solid #d27f33;
   font-family: "Baloo Bhaina 2", cursive;
   color: #d27f33;
-  border-radius: 20px;
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  border-radius: 20px 0 0 20px;
+  padding-right: 26px;
 
   span {
     padding-top: 5px;
@@ -111,12 +112,13 @@ export const populationButton = css`
   border-radius: 80px;
   box-sizing: border-box;
   gap: 0.4rem;
-  border: 2px solid #8b3438;
   font-family: "Baloo Bhaina 2", cursive;
   color: #8b3438;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  border-radius: 0 20px 20px 0;
+  padding-left: 26px;
 
   span {
     padding-top: 5px;

@@ -17,7 +17,7 @@ export type AllContexts = {
 };
 
 export type Card = {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   cost: number;
@@ -27,4 +27,4 @@ export type Card = {
   action: (contexts: AllContexts) => void;
 };
 
-export type CardAction = (contexts: AllContexts, card: Card) => void;
+export type CardAction = (contexts: AllContexts, card: Card, ...props: any[]) => void;

@@ -16,6 +16,7 @@ export type GameboardContextType = {
   gridDimensions: number[];
   updateRandomGridItems: (numItems: number, updateFunc: (gridItem: GridItem) => GridItem, filter: (gridItem: GridItem) => boolean) => void;
   tileWidth: number;
+  getPopulation: () => number;
 };
 
 export const GameboardContext = React.createContext<GameboardContextType>({
@@ -27,6 +28,7 @@ export const GameboardContext = React.createContext<GameboardContextType>({
   gridDimensions: gridDimensions,
   updateRandomGridItems: () => {},
   tileWidth: tileWidth,
+  getPopulation: () => 0,
 });
 
 export const GameboardProvider = ({ children }: { children: ReactNode }) => {
@@ -75,13 +77,24 @@ export const GameboardProvider = ({ children }: { children: ReactNode }) => {
     });
   }
 
+  const getPopulation = () => {
+    return grid.reduce((acc, row) => {
+      return acc + row.reduce((acc, item) => {
+        if (item.building?.population && item.building?.constructionTurns === 0) {
+          return acc + item.building.population;
+        }
+        return acc;
+      }, 0);
+    }, 0);
+  }
+
   const initGrid = () => {
     const newGrid = generateTerrain({ landInset: 2, waterInset: 2, gridDimensions });
 
     setGrid(generateVillage({population: 4, grid: newGrid}));
   }
 
-  const contextValue = { grid, updateGridItem, initGrid, getGridItem, getMatchingGridItems, gridDimensions, updateRandomGridItems, tileWidth };
+  const contextValue = { grid, updateGridItem, initGrid, getGridItem, getMatchingGridItems, gridDimensions, updateRandomGridItems, tileWidth, getPopulation };
 
   return (
     <GameboardContext.Provider value={contextValue}>

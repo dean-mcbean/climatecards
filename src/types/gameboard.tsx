@@ -12,6 +12,7 @@ export type Building = {
   icon: JSX.Element;
   constructionTurns: number;
   maxConstructionTurns: number;
+  population?: number;
 }
 
 export type GridItem = {

@@ -17,23 +17,26 @@ export type GameloopContextType = {
   gameState: GameloopState;
   funding: number;
   startBuildingGameState: (building: Building, activeCard: Card, filter: (gridItem: GridItem) => boolean) => void;
+  addFunding: (amount: number) => void;
 };
 
 export const GameloopContext = React.createContext<GameloopContextType>({
   gameState: { status: "idle" },
   funding: 0,
   startBuildingGameState: () => {},
+  addFunding: () => {},
 });
 
 export const GameloopProvider = ({ children }: { children: ReactNode }) => {
   const { turn } = useTimeContext();
   const { initDeck, drawCard } = useCardContext();
-  const {initGrid, updateGridItem, getMatchingGridItems} = useGameboardContext();
+  const {initGrid, updateGridItem, getPopulation} = useGameboardContext();
   const { setMouseTracking, setCursorIcon, setGameboardTileSelectionFilter, setOnGameboardTileSelection } = useUIContext();
   const [gameState, setGameState] = React.useState<GameloopState>({
     status: "idle",
   });
   const [funding, setFunding] = React.useState(0);
+  const addFunding = (amount: number) => setFunding((prev_funding) => prev_funding + amount);
 
 
   const startBuildingGameState = useCallback((building: Building, activeCard: Card, gridItemFilter?: (gridItem: GridItem) => boolean) => {
@@ -69,18 +72,16 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
     // Core gameloop logic here
     
     // Earn Funding
-    let funding = 0;
-    getMatchingGridItems((gridItem) => gridItem.building?.type === "house").forEach((gridItem) => {
-      funding += 1;
-    });
-    setFunding((prev_funding) => funding + prev_funding);
+    let pop = getPopulation()
+    setFunding((prev_funding) => prev_funding + pop);
 
-  }, [turn]);
+  }, [turn, getPopulation, setFunding]);
 
   const contextValue = { 
     gameState, 
     startBuildingGameState,
-    funding
+    funding,
+    addFunding,
   };
 
   return (

@@ -10,5 +10,6 @@ export const buildingPresets: Record<Building['type'], Building> = {
     icon: <FaHouse />,
     constructionTurns: 3,
     maxConstructionTurns: 3,
+    population: 1,
   },
 }

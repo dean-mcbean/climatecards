@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card as CardType } from "../../../types/cards";
-import { cardGround, cardContainer, cardContent, cardHeader, costBubble, cardFooter, cardCost, cardConstructionTurns, cardBevel } from "./Card.styles";
+import { cardGround, cardContainer, cardContent, cardHeader, costBubble, cardFooter, cardCost, cardConstructionTurns, cardBevel, cardFree } from "./Card.styles";
 
 interface CardProps {
   card: CardType;
@@ -23,7 +23,7 @@ export const Card = ({ card, onCardClick } : CardProps) => {
         </div>
       </div>
       <div css={cardFooter}>
-        <div css={cardCost}>{card.cost}</div>
+        {card.cost > 0 ? <div css={cardCost}>{card.cost}</div> : <div css={cardFree}>FREE</div>}
         {card.building && <div css={cardConstructionTurns}>{card.building.maxConstructionTurns}</div>}
       </div>
       <div css={cardBevel} />

@@ -23,7 +23,7 @@ export const CardhandPanel = () => {
   const { hand, removeCardFromHand } = cardContext;
   const { nextTurn } = timeContext;
 
-  const population = useMemo(() => gameboardContext.getMatchingGridItems((item) => item.building?.type === "house").length, [gameboardContext]);
+  const population = useMemo(() => gameboardContext.getPopulation(), [gameboardContext]);
 
 
   const cardClicked = (card: CardType) => {
@@ -48,7 +48,7 @@ export const CardhandPanel = () => {
       </div>
       <div css={cardhandPanelInner}>
         {hand.map((card, index) => (
-          <Card key={index} card={card} onCardClick={cardClicked} />
+          <Card key={card.id} card={card} onCardClick={cardClicked} />
         ))}
       </div>
     </div>

@@ -24,6 +24,7 @@ export const cardContainer = css`
   position: relative;
   width: 150px;
   cursor: pointer;
+  transition: transform 0.1s ease-in-out;
 
   .card-content >  div:first-of-type {
     transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
@@ -43,6 +44,7 @@ export const cardContainer = css`
   }
 
   &:hover {
+    transform: scale(1.05);
 
     .card-content > div:first-of-type  {
       opacity: 0;
@@ -132,7 +134,7 @@ export const cardFooter = css`
   justify-content: center;
   align-items: center;
   height: 25%;
-  gap: 48px;
+  justify-content: space-evenly;
 `;
 
 export const cardCost = css`
@@ -181,4 +183,15 @@ export const cardBevel = css`
   border-top: 1px solid #fff5;
   border-left: 1px solid white;
   opacity: 0.2;
+`;
+
+export const cardFree = css`
+  color: #2a4e68;
+  font-family: "Baloo Bhaina 2", cursive;
+  font-weight: 800;
+  font-size: 1.4rem;
+  padding-top: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

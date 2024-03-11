@@ -47,7 +47,7 @@ export const CardProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const removeCardFromHand = useCallback((card: Card) => {
-    setHand((prevHand) => prevHand.filter((c) => c !== card));
+    setHand((prevHand) => prevHand.filter((c) => c.id !== card.id));
   }, []);
 
   const contextValue = { deck, hand, drawCard, initDeck, removeCardFromHand };
