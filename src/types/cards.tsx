@@ -23,8 +23,10 @@ export type Card = {
   cost: number;
   effect: string;
   building?: Building;
+  icon?: JSX.Element;
   category: 'common' | 'produced';
-  action: (contexts: AllContexts) => void;
+  type: 'building' | 'funding' | 'research';
+  action: (contexts: AllContexts, card: Card) => void;
 };
 
 export type CardAction = (contexts: AllContexts, card: Card, ...props: any[]) => void;

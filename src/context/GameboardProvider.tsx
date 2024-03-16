@@ -91,7 +91,7 @@ export const GameboardProvider = ({ children }: { children: ReactNode }) => {
   const initGrid = () => {
     const newGrid = generateTerrain({ landInset: 2, waterInset: 2, gridDimensions });
 
-    setGrid(generateVillage({population: 4, grid: newGrid}));
+    setGrid(generateVillage({population: 1, grid: newGrid}));
   }
 
   const contextValue = { grid, updateGridItem, initGrid, getGridItem, getMatchingGridItems, gridDimensions, updateRandomGridItems, tileWidth, getPopulation };

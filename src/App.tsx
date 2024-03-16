@@ -3,6 +3,7 @@
 import { appContainer, upperAppContainer } from "./App.styles";
 import { WeatherEffectOverlay } from "./components/molecules/WeatherEffectOverlay/WeatherEffectOverlay";
 import { CardhandPanel } from "./components/organisms/CardhandPanel/CardhandPanel";
+import { DeckSideDrawer } from "./components/organisms/DeckSidedrawer/DeckSidedrawer";
 import { Gameboard } from "./components/organisms/Gameboard/Gameboard";
 import { UIOverlay } from "./components/organisms/UIOverlay/UIOverlay";
 import { CardProvider } from "./context/CardProvider";
@@ -29,6 +30,7 @@ export default function App() {
                   </div>
                   <CardhandPanel />
                 </div>
+                <DeckSideDrawer />
               </GameloopProvider>
             </CardProvider>
           </HazardProvider>

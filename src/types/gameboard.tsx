@@ -5,7 +5,7 @@ export type GridItemWarning = {
 }
 
 export type Building = {
-  type: "house";
+  type: "house" | "bach";
   isRaised?: boolean;
   health: number;
   maxHealth: number;

@@ -74,7 +74,7 @@ export const currentTurnContainer = css`
 `;
 
 export const subtitle = css`
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: white;
   text-shadow: 0 1px 0px ${palette.blue(600)};

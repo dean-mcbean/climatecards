@@ -57,6 +57,7 @@ export const Cursor = ({onClick}: CursorProps) => {
       setHoveredTile(nearestTile);
     } else {
       setMousePositionState({ x: mouseX, y: mouseY });
+      hoveredTile.current = null;
       setHoveredTile(null);
     }
   
@@ -65,9 +66,12 @@ export const Cursor = ({onClick}: CursorProps) => {
 
 
   const triggerClickEvent = useCallback(() => {
+    console.log("CLICKED!", hoveredTile.current, onClick)
     if (onClick) {
       onClick(hoveredTile.current);
     }
+    setHoveredTile(null);
+    hoveredTile.current = null;
     setCursorVisible(false);
   }, [onClick, hoveredTile]);
 
@@ -76,13 +80,21 @@ export const Cursor = ({onClick}: CursorProps) => {
     // Core UI logic here
     window.addEventListener("mousemove", mouseRefEvent);
     if (mouseTracking) {
+      console.log('add event listeners');
       window.addEventListener("mousemove", mouseStateEvent);
       window.addEventListener("click", triggerClickEvent);
       if (!cursorVisible) {
         setMousePositionState(mousePosition.current);
         setCursorVisible(true);
       }
+    } else {
+      console.log('remove event listeners');
+      window.removeEventListener("mousemove", mouseStateEvent);
+      window.removeEventListener("click", triggerClickEvent);
+      setCursorVisible(false);
     }
+    console.log("event listeners")
+
     return () => {
       window.removeEventListener("mousemove", mouseRefEvent);
       window.removeEventListener("mousemove", mouseStateEvent);

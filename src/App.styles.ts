@@ -8,6 +8,7 @@ export const appContainer = css`
   align-items: stretch;
   height: 100%;
   position: relative;
+  overflow: hidden;
   
   background: ${palette.gradient.skyBlue()};
   `

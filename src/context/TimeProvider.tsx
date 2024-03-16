@@ -10,6 +10,8 @@ export type TimeContextType = {
   upcomingEvents: HazardEvent[];
   currentEvent: HazardEvent | null;
   pastEvents: HazardEvent[];
+  getDayOfWeek: () => string;
+  getWeek: () => number;
 };
 
 
@@ -19,6 +21,8 @@ export const TimeContext = React.createContext<TimeContextType>({
   upcomingEvents: [],
   currentEvent: null,
   pastEvents: [],
+  getDayOfWeek: () => "",
+  getWeek: () => 0,
 });
 
 
@@ -50,12 +54,27 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
     });
 
   }
+  const getDayOfWeek = () => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[turn % 7];
+  }
+  const getWeek = () => {
+    return Math.floor(turn / 7) + 1;
+  }
 
   const [upcomingEvents, setUpcomingEvents] = React.useState<HazardEvent[]>([]);
   const [currentEvent, setCurrentEvent] = React.useState<HazardEvent | null>(null);
   const [pastEvents, setPastEvents] = React.useState<HazardEvent[]>([]);
 
-  const contextValue = { turn, nextTurn, upcomingEvents, currentEvent, pastEvents};
+  const contextValue = { 
+    turn, 
+    nextTurn, 
+    upcomingEvents, 
+    currentEvent, 
+    pastEvents,
+    getDayOfWeek,
+    getWeek
+  };
 
   useEffect(() => {
     if (upcomingEvents.length === 0) {
@@ -63,7 +82,7 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
       if (currentEvent) {
         min_turn = currentEvent.end_turn;
       }
-      const randomTurns = Math.floor(Math.random() * 5) + 2 + min_turn;
+      const randomTurns = Math.floor(Math.random() * 4) + 2 + min_turn;
       const newEvent: HazardEvent = randomHazardEvent({
           start_turn: randomTurns,
         });

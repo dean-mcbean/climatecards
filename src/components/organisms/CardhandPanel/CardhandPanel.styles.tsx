@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { palette } from "../../../theme/palette";
 
 export const CardhandPanelContainer = css`
@@ -16,16 +16,14 @@ export const CardhandPanelContainer = css`
 export const cardhandPanelInner = css`
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
   justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+  align-items: stretch;
+  flex-wrap: nowrap;
   max-width: 100%;
   width: 100%;
-  overflow-x: auto;
-  padding: 1rem;
+  overflow: visible;
+  padding: 1rem 150px;
   box-sizing: border-box;
-  overflow-y: hidden;
 `;
 
 export const nextTurnButton = css`
@@ -122,5 +120,78 @@ export const populationButton = css`
 
   span {
     padding-top: 5px;
+  }
+`
+
+const expand = keyframes`
+  from {
+    width: 0;
+  }
+  to {
+    width: 150px;
+  }
+`
+
+const collapse = keyframes`
+  from {
+    width: 150px;
+    transform: translateY(0);
+    opacity: 1;
+    margin: 0 7px;
+  }
+  50% {
+    width: 150px;
+    transform: translateY(-100px);
+    opacity: 0;
+    margin: 0 7px;
+  }
+  to {
+    width: 0;
+    transform: translateY(-100px);
+    opacity: 0;
+    margin: 0 0;
+  }
+`
+
+export const cardContainer = (index: number, shouldCollapse: boolean) => css`
+  width: 150px;
+  flex-shrink: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0 7px;
+  ${
+    shouldCollapse ? 
+    css`animation: ${collapse} 0.3s ease-in-out both;` : 
+    css`animation: ${expand} 0.15s ease-in-out both;` 
+  }
+  transition: transform 0.2s ease-in-out;
+
+  > div {
+    z-index: ${index};
+    position: absolute;
+  }
+`
+
+export const openDeckButton = css`
+  position: absolute;
+  top: -36px;
+  left: 10px;
+  color: ${palette.blue(700)};
+  height: 36px;
+  width: 36px;
+  cursor: pointer;
+  z-index: 100;
+  transition: transform 0.1s ease-in-out, color 0.1s ease-in-out;
+  will-change: transform, color;
+
+  &:hover {
+    transform: scale(1.1);
+    color: ${palette.blue(800)};
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
   }
 `

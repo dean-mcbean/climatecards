@@ -1,5 +1,23 @@
 import { css, keyframes } from "@emotion/react";
-import { palette } from "../../../theme/palette";
+import { Card } from "../../../types/cards";
+
+const cardTypeColors: { [key in Card['type']]: any } = {
+  'building': {
+    background: '#f16134',
+    border: '#bb4622',
+    hardShadow: '#813325',
+  },
+  'funding': {
+    background: '#fd9d21',
+    border: '#c36300',
+    hardShadow: '#b95d04',
+  },
+  'research': {
+    background: '#4aa7c0',
+    border: '#005e7e',
+    hardShadow: '#125f6f',
+  }
+}
 
 const fadein = keyframes`
   from {
@@ -12,19 +30,24 @@ const fadein = keyframes`
   }
 `;
 
-export const cardContainer = css`
+export const cardContainer = (type: string) => {
+  const colors = cardTypeColors[type as Card['type']];
+  
+  return css`
   display: flex;
   height: 100%;
   flex-direction: column;
-  animation: ${fadein} 0.3s ease-in-out;
-  background: linear-gradient(160deg, #598ea0 0%, #487d8f 50%, #2d5a6e 100%);
-  box-shadow: inset -3px -3px 1px 3px #18434f90, inset -42px 0px 1px -21px #2d5a6e20, 2px 2px 2px 0px #2d5c6b20;
-  border-radius: 14px;
+  animation: ${fadein} 0.4s ease-in-out 0.2s backwards;
+  background: linear-gradient(160deg, ${colors.background} 0%, ${colors.border} 100%);
+  box-shadow: inset -3px -3px 1px 3px ${colors.hardShadow}, inset -42px 0px 1px -21px ${colors.border}20, 2px 2px 2px 0px #2d5c6b20, 0px 6px 6px 0px #0242;
+  border-radius: 14px 14px 8px 8px;
   overflow: hidden;
   position: relative;
   width: 150px;
   cursor: pointer;
-  transition: transform 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  height: 250px;
+  position: relative;
 
   .card-content >  div:first-of-type {
     transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
@@ -45,6 +68,8 @@ export const cardContainer = css`
 
   &:hover {
     transform: scale(1.05);
+    z-index: 100;
+    box-shadow: inset -3px -3px 1px 3px ${colors.hardShadow}, inset -42px 0px 1px -21px ${colors.border}20, 2px 2px 2px 0px #2d5c6b20, 0px 10px 10px 0px #0244;
 
     .card-content > div:first-of-type  {
       opacity: 0;
@@ -59,19 +84,23 @@ export const cardContainer = css`
 
   }
   
-`;
+`
+};
 
-export const cardContent = css`
+export const cardContent = (type: string) => {
+  const colors = cardTypeColors[type as Card['type']];
+  
+  return css`
   z-index: 10;
   border-radius: 0 0 14px 14px;
   flex-grow: 1;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   margin-top: -12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   color: white;
-  text-shadow: 0px 1px 0px #2d5a6e50, 1px 0px 0px #2d5a6e50;
+  text-shadow: 0px 1px 0px ${colors.border}50, 1px 0px 0px ${colors.border}50;
   position: relative;
 
   > div {
@@ -92,16 +121,17 @@ export const cardContent = css`
       svg {
         width: 80px;
         height: 80px;
-        color: #2a4e68;
+        color: ${colors.hardShadow};
       }
     }
   }
 `;
+}
 
 export const cardHeader = css`
   color: white;
   z-index: 20;
-  font-size: 0.55rem;
+  font-size: 0.65rem;
   padding: 0 2rem;
   height: 25%;
   display: flex;
@@ -114,37 +144,65 @@ export const cardHeader = css`
   line-height: 1.1;
 `
 
-export const costBubble = (cost: number) => css`
-`;
-
-export const cardGround = css`
-  position: absolute;
-  height: 50%;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  background: linear-gradient(180deg, #91a967 0%, #688c5c 100%);
-  border-top: 3px solid #1c4145;
-  z-index: 1;
-`;
-
-export const cardFooter = css`
+export const cardFooter = (type: string) => {
+  const colors = cardTypeColors[type as Card['type']];
+  
+  return css`
   z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 25%;
-  justify-content: space-evenly;
-`;
+  justify-content: space-between;
+  padding: 0;
+  box-shadow: 0px 0px 4px 0px ${colors.hardShadow}60;
+`
+};
 
-export const cardCost = css`
+export const cardCost = (type: string) => {
+  
+  return css`
+  background: #ffb443;
+  font-family: "Baloo Bhaina 2", cursive;
+  color: #5a2f12;
+  border-radius: 0 0 0 8px;
+  font-weight: 800;
+  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  padding: 4px 0 0 0;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  align-items: center;
+  flex-grow:1;
+  max-width: 50%;
+  box-shadow: inset -2px -4px 1px -2px #cd7c00, inset -24px -24px 16px -22px #cd7c00BB;
+
+
+  opacity: 0.9;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    top: -2px;
+  }
+`;
+}
+
+/* 
+export const cardCost = (type: string) => {
+  const colors = cardTypeColors[type as Card['type']];
+  
+  return css`
   background: #feb84d;
   font-family: "Baloo Bhaina 2", cursive;
   color: #5a2f12;
   border-radius: 20px;
   font-weight: 800;
   font-size: 1.2rem;
-  border: 2px solid #0c262f;
+  border: 2px solid ${colors.hardShadow};
   box-shadow: inset -1px -1px 2px 1px #c06728, inset 1px 1px 1px 0px #fff;
   width: 32px;
   height: 32px;
@@ -154,24 +212,37 @@ export const cardCost = css`
   justify-content: center;
   align-items: center;
 `;
-
-export const cardConstructionTurns = css`
-  background: #4aa7c0;
+}
+ */
+export const cardConstructionTurns =  (type: string) => {
+  
+  return css`
+  background: #7ee34c;
   color: #11313c;
   font-family: "Baloo Bhaina 2", cursive;
-  border-radius: 20px;
+  border-radius: 0 0 8px 0;
   font-weight: 800;
   font-size: 1.2rem;
-  border: 2px solid #0c262f;
-  box-shadow: inset -2px -2px 4px 0px #1b5062, inset 1px 1px 1px 0px #fff;
   width: 32px;
   height: 32px;
-  padding-top: 6px;
+  padding: 4px 0 0 0;
+  gap: 6px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-grow:1;
+  box-shadow: inset -6px -2px 1px 0px #599b51, inset -28px -24px 16px -22px #599b5190, inset 4px 0px 2px -4px #599b51DD;
+  opacity: 0.9;
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: -2px;
+  }
 `;
+}
 
 export const cardBevel = css`
   position: absolute;
@@ -185,8 +256,11 @@ export const cardBevel = css`
   opacity: 0.2;
 `;
 
-export const cardFree = css`
-  color: #2a4e68;
+export const cardFree = (type: string) => {
+  const colors = cardTypeColors[type as Card['type']];
+  
+  return css`
+  color: ${colors.hardShadow};
   font-family: "Baloo Bhaina 2", cursive;
   font-weight: 800;
   font-size: 1.4rem;
@@ -195,3 +269,4 @@ export const cardFree = css`
   justify-content: center;
   align-items: center;
 `;
+}

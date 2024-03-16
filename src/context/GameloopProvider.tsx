@@ -18,6 +18,7 @@ export type GameloopContextType = {
   funding: number;
   startBuildingGameState: (building: Building, activeCard: Card, filter: (gridItem: GridItem) => boolean) => void;
   addFunding: (amount: number) => void;
+  trySpendFunding: (amount: number) => boolean;
 };
 
 export const GameloopContext = React.createContext<GameloopContextType>({
@@ -25,29 +26,38 @@ export const GameloopContext = React.createContext<GameloopContextType>({
   funding: 0,
   startBuildingGameState: () => {},
   addFunding: () => {},
+  trySpendFunding: () => false,
 });
 
 export const GameloopProvider = ({ children }: { children: ReactNode }) => {
   const { turn } = useTimeContext();
   const { initDeck, drawCard } = useCardContext();
   const {initGrid, updateGridItem, getPopulation} = useGameboardContext();
-  const { setMouseTracking, setCursorIcon, setGameboardTileSelectionFilter, setOnGameboardTileSelection } = useUIContext();
+  const { setMouseTracking, setCursorIcon, setGameboardTileSelectionFilter, setOnGameboardTileSelection, createFundingFlyingCoins } = useUIContext();
   const [gameState, setGameState] = React.useState<GameloopState>({
     status: "idle",
   });
   const [funding, setFunding] = React.useState(0);
   const addFunding = (amount: number) => setFunding((prev_funding) => prev_funding + amount);
+  const trySpendFunding = (amount: number) => {
+    if (funding >= amount) {
+      setFunding((prev_funding) => prev_funding - amount);
+      return true;
+    }
+    return false;
+  }
 
 
   const startBuildingGameState = useCallback((building: Building, activeCard: Card, gridItemFilter?: (gridItem: GridItem) => boolean) => {
+    console.log("startBuildingGameState")
     setGameState({ status: "building", building, activeCard });
     if (gridItemFilter) {
-      console.log('icon', building.icon, gridItemFilter);
       setGameboardTileSelectionFilter(() => gridItemFilter);
     }
     setMouseTracking(true);
     setCursorIcon(building.icon);
     setOnGameboardTileSelection(() => (gridItem: GridItem | null) => {
+      console.log(gridItem, 'onGameboardTileSelection')
       if (gridItem) {
         updateGridItem(gridItem.y, gridItem.x, (gridItem) => {
           return { ...gridItem, building };
@@ -57,8 +67,7 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
         setCursorIcon(null);
       }
     });
-    console.log("Building", building, "started");
-  }, [setGameState, setMouseTracking, setCursorIcon, setGameboardTileSelectionFilter]);
+  }, [setGameState, setMouseTracking, setCursorIcon, setGameboardTileSelectionFilter, setOnGameboardTileSelection, updateGridItem]);
 
   // Initialize game state here
   useEffect(() => {
@@ -70,18 +79,21 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Core gameloop logic here
+    drawCard();
     
     // Earn Funding
     let pop = getPopulation()
     setFunding((prev_funding) => prev_funding + pop);
+    createFundingFlyingCoins();
 
-  }, [turn, getPopulation, setFunding]);
+  }, [turn]);
 
   const contextValue = { 
     gameState, 
     startBuildingGameState,
     funding,
     addFunding,
+    trySpendFunding
   };
 
   return (

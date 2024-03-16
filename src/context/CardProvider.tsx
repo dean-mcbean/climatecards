@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useEffect } from "react";
 import { Card } from "../types/cards";
-import { randomCardPreset } from "../data/cards/cardBuilder";
+import { cardBuilder, copyCard, randomCardPreset } from "../data/cards/cardBuilder";
 
 export type CardContextType = {
   deck: Card[];
@@ -8,6 +8,7 @@ export type CardContextType = {
   drawCard: () => void;
   initDeck: () => void;
   removeCardFromHand: (card: Card) => void;
+  getCardBoundingBox: (card: Card) => DOMRect | null;
 };
 
 export const CardContext = React.createContext<CardContextType>({
@@ -15,7 +16,8 @@ export const CardContext = React.createContext<CardContextType>({
   hand: [],
   drawCard: () => {},
   initDeck: () => {},
-  removeCardFromHand: () => {}
+  removeCardFromHand: () => {},
+  getCardBoundingBox: () => null,
 });
 
 export const CardProvider = ({ children }: { children: ReactNode }) => {
@@ -29,28 +31,39 @@ export const CardProvider = ({ children }: { children: ReactNode }) => {
         return prevDeck;
       }
       const randomIndex = Math.floor(Math.random() * prevDeck.length);
-      const randomCard = prevDeck[randomIndex];
+      const randomCard = copyCard(prevDeck[randomIndex]);
       setHand((prevHand) => [...prevHand, randomCard]);
-      const newDeck = [...prevDeck];
-      newDeck.splice(randomIndex, 1);
-      return newDeck;
+      return prevDeck;
     });
   }, [deck]);
 
   const initDeck = useCallback(() => {
     // Create a deck of cards
     const newDeck: Card[] = [];
-    for (let i = 0; i < 10; i++) {
-      newDeck.push(randomCardPreset());
-    }
+    newDeck.push(cardBuilder("housing_development"));
+    newDeck.push(cardBuilder('fundraiser'));
+    newDeck.push(cardBuilder("field_research"));
+    newDeck.push(cardBuilder("bach"));
     setDeck(newDeck);
   }, []);
+
+  console.log(deck)
 
   const removeCardFromHand = useCallback((card: Card) => {
     setHand((prevHand) => prevHand.filter((c) => c.id !== card.id));
   }, []);
 
-  const contextValue = { deck, hand, drawCard, initDeck, removeCardFromHand };
+  const getCardBoundingBox = (card: Card) => {
+    const element = document.getElementById(`card-${card.id}`);
+    console.log(element, card, `card-${card.id}`)
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      return rect;
+    }
+    return null;
+  }
+
+  const contextValue = { deck, hand, drawCard, initDeck, removeCardFromHand, getCardBoundingBox };
 
   return (
     <CardContext.Provider value={contextValue}>
