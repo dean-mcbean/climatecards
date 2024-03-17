@@ -9,6 +9,8 @@ export type CardContextType = {
   initDeck: () => void;
   removeCardFromHand: (card: Card) => void;
   getCardBoundingBox: (card: Card) => DOMRect | null;
+  refreshHand: () => void;
+  addCardToDeck: (card: Card) => void;
 };
 
 export const CardContext = React.createContext<CardContextType>({
@@ -18,11 +20,18 @@ export const CardContext = React.createContext<CardContextType>({
   initDeck: () => {},
   removeCardFromHand: () => {},
   getCardBoundingBox: () => null,
+  refreshHand: () => {},
+  addCardToDeck: () => {},
 });
 
 export const CardProvider = ({ children }: { children: ReactNode }) => {
   const [deck, setDeck] = React.useState<Card[]>([]);
   const [hand, setHand] = React.useState<Card[]>([]);
+  const [handSize, setHandSize] = React.useState<number>(3);
+
+  const addCardToDeck = (card: Card) => {
+    setDeck((prevDeck) => [...prevDeck, card]);
+  };
 
   const drawCard = useCallback(() => {
     // Pull a random card from deck and add it to the hand
@@ -32,22 +41,31 @@ export const CardProvider = ({ children }: { children: ReactNode }) => {
       }
       const randomIndex = Math.floor(Math.random() * prevDeck.length);
       const randomCard = copyCard(prevDeck[randomIndex]);
-      setHand((prevHand) => [...prevHand, randomCard]);
+      setHand((prevHand) => [...prevHand, randomCard].sort((a, b) => -a.type.localeCompare(b.type) || a.cost - b.cost));
       return prevDeck;
     });
-  }, [deck]);
+  }, [deck, hand]);
+
+  const refreshHand = useCallback(() => {
+    setHand([]);
+    for (let i = 0; i < handSize; i++) {
+      drawCard();
+    }
+    setHand((prevHand) => {
+      prevHand;
+      console.log(prevHand);
+      return prevHand;
+    });
+  }, [drawCard, handSize]);
 
   const initDeck = useCallback(() => {
     // Create a deck of cards
     const newDeck: Card[] = [];
-    newDeck.push(cardBuilder("housing_development"));
-    newDeck.push(cardBuilder('fundraiser'));
+    newDeck.push(cardBuilder('donations'));
     newDeck.push(cardBuilder("field_research"));
     newDeck.push(cardBuilder("bach"));
     setDeck(newDeck);
   }, []);
-
-  console.log(deck)
 
   const removeCardFromHand = useCallback((card: Card) => {
     setHand((prevHand) => prevHand.filter((c) => c.id !== card.id));
@@ -63,7 +81,7 @@ export const CardProvider = ({ children }: { children: ReactNode }) => {
     return null;
   }
 
-  const contextValue = { deck, hand, drawCard, initDeck, removeCardFromHand, getCardBoundingBox };
+  const contextValue = { deck, hand, drawCard, initDeck, removeCardFromHand, getCardBoundingBox, refreshHand, addCardToDeck };
 
   return (
     <CardContext.Provider value={contextValue}>

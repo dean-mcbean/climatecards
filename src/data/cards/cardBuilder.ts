@@ -3,22 +3,27 @@ import { CardPresetKey, cardPresets } from "./presets"
 
 let cardCount = 0;
 
-const buildCardFromPreset = (preset: Card): Card => {
+const buildCardFromPresetKey = (presetKey: CardPresetKey): Card => {
   cardCount++;
   return {
-    ...preset,
-    id: cardCount
+    ...cardPresets[presetKey],
+    id: cardCount,
+    presetKey
   }
 }
 
 export const randomCardPreset = (): Card => {
   const keys = Object.keys(cardPresets) as CardPresetKey[]
   const randomKey = keys[Math.floor(Math.random() * keys.length)]
-  return buildCardFromPreset(cardPresets[randomKey])
+  return buildCardFromPresetKey(randomKey)
 }
 
 export const cardBuilder = (preset: CardPresetKey): Card => {
-  return buildCardFromPreset(cardPresets[preset])
+  return buildCardFromPresetKey(preset)
+}
+
+export const getCardPresetKeys = () => {
+  return Object.keys(cardPresets) as CardPresetKey[];
 }
 
 export const copyCard = (card: Card): Card => {

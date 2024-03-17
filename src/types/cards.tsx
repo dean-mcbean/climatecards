@@ -27,6 +27,7 @@ export type Card = {
   category: 'common' | 'produced';
   type: 'building' | 'funding' | 'research';
   action: (contexts: AllContexts, card: Card) => void;
+  presetKey?: string;
 };
 
 export type CardAction = (contexts: AllContexts, card: Card, ...props: any[]) => void;

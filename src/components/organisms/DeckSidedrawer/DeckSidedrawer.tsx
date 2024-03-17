@@ -13,6 +13,7 @@ export const DeckSideDrawer = () => {
   const { deck } = useCardContext();
 
   console.log(deck);
+  const sortedDeck = deck.sort((a, b) => -a.type.localeCompare(b.type) || a.cost - b.cost);
 
   return (
     <div css={deckSideDrawerOverlay(deckSideDrawerExpanded)} >
@@ -21,7 +22,7 @@ export const DeckSideDrawer = () => {
         <p>This is your deck of potential actions! Any time you draw a card, it's chosen randomly from these options.</p>
         <div css={deckSideDrawerCloseButton} onClick={() => setDeckSideDrawerExpanded(false)}><IoClose /></div>
         <div css={deckSideDrawerCards} >
-          {deck.map((card) => (
+          {sortedDeck.map((card) => (
             <Card key={card.id} card={card} />
           ))}
         </div>

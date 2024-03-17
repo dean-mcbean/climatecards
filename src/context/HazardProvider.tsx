@@ -38,7 +38,7 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
       });
 
       // Check for collision
-      const collision = getMatchingGridItems((item) => item.x === wave.x - 1 && item.y === wave.y && !item.isWater);
+      const collision = getMatchingGridItems((item) => item.x === wave.x - 1 && item.y === wave.y && !item.isWater && !item.inundation);
       if (collision.length > 0) {
         // TODO Handle collision
         updateGridItem(wave.y, wave.x - 1, (gridItem) => {
@@ -91,8 +91,6 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
                 result.isRaised = false;
               } else {
                 result.isWater = true;
-                result.building = undefined;
-                result.inundation = 0;
               }
               break;
           }

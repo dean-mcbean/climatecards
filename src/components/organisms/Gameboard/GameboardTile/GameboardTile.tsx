@@ -4,7 +4,6 @@ import { useTimeContext } from "../../../../context/TimeProvider";
 import { GridItem } from "../../../../types/gameboard";
 import { GameboardTileContainer, buildingContainer, buildingHealth, buildingHealthPip, buildingShadow, gameboardTile, gameboardTileDepth, inundationBuilding, inundationContainer, inundationCountdown, selectionContainer, warningContainer, waveContainer } from "./GameboardTile.styles";
 import { MdTsunami } from "react-icons/md";
-import { MdOutlineWaves } from "react-icons/md";
 import { GiEdgeCrack } from "react-icons/gi";
 import { useHazardContext } from "../../../../context/HazardProvider";
 import { useEffect, useMemo, useState } from "react";
@@ -15,6 +14,7 @@ import { ImCross } from "react-icons/im";
 import { LuConstruction } from "react-icons/lu";
 import { Countdown } from "../../../atoms/Countdown/Countdown";
 import { palette } from "../../../../theme/palette";
+import { FaDroplet } from "react-icons/fa6";
 
 
 export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
@@ -57,14 +57,16 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
       <div css={inundationCountdown(gridItem.inundation)}>
       </div>
       <div css={inundationBuilding(gridItem.inundation)}>
-        {gridItem.building ? gridItem.building.icon : null}
+        {gridItem.building ? 
+        gridItem.building.constructionTurns == 0 ? 
+        gridItem.building.icon : <LuConstruction /> : null}
       </div>
     </div>
   );
   
-  let warning = gridItem.warning && gameState.status == 'idle' ? (
+  let warning = gridItem.warning ? (
     <div css={warningContainer(gridItem.warning)}>
-      {gridItem.warning.type == 'flooding' ? <MdOutlineWaves /> : gridItem.warning.type == 'landslide' ? <GiEdgeCrack /> : null}
+      {gridItem.warning.type == 'flooding' ? <FaDroplet /> : gridItem.warning.type == 'landslide' ? <GiEdgeCrack /> : null}
     </div>
   ) : null;
 
@@ -125,10 +127,18 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
     // Progress Building Construction
     if (gridItem.building) {
       const constructionTurns = gridItem.building.constructionTurns;
-      const building = gridItem.building;
       if (constructionTurns > 0) {
         updateGridItem(gridItem.y, gridItem.x, (gridItem: GridItem) => {
-          return { ...gridItem, building: { ...building, constructionTurns: constructionTurns - 1 } };
+          if (gridItem.building) {
+            return { ...gridItem, building: { ...gridItem.building, constructionTurns: constructionTurns - 1 } };
+          }
+          setCountdown({
+            value: 0,
+            max: 0,
+            color: palette.green(600),
+            backgroundColor: palette.brown()
+          });
+          return gridItem;
         });
       }
     }

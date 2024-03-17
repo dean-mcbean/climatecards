@@ -19,6 +19,7 @@ export type GameloopContextType = {
   startBuildingGameState: (building: Building, activeCard: Card, filter: (gridItem: GridItem) => boolean) => void;
   addFunding: (amount: number) => void;
   trySpendFunding: (amount: number) => boolean;
+  resolveCardUnlock: (card?: Card) => void;
 };
 
 export const GameloopContext = React.createContext<GameloopContextType>({
@@ -27,11 +28,12 @@ export const GameloopContext = React.createContext<GameloopContextType>({
   startBuildingGameState: () => {},
   addFunding: () => {},
   trySpendFunding: () => false,
+  resolveCardUnlock: () => {},
 });
 
 export const GameloopProvider = ({ children }: { children: ReactNode }) => {
-  const { turn } = useTimeContext();
-  const { initDeck, drawCard } = useCardContext();
+  const { turn, dayOfWeek } = useTimeContext();
+  const { initDeck, refreshHand, addCardToDeck } = useCardContext();
   const {initGrid, updateGridItem, getPopulation} = useGameboardContext();
   const { setMouseTracking, setCursorIcon, setGameboardTileSelectionFilter, setOnGameboardTileSelection, createFundingFlyingCoins } = useUIContext();
   const [gameState, setGameState] = React.useState<GameloopState>({
@@ -47,9 +49,15 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
     return false;
   }
 
+  const resolveCardUnlock = (card?: Card) => {
+    if (card) {
+      addCardToDeck(card);
+    }
+    setGameState({ status: "idle" });
+  }
+
 
   const startBuildingGameState = useCallback((building: Building, activeCard: Card, gridItemFilter?: (gridItem: GridItem) => boolean) => {
-    console.log("startBuildingGameState")
     setGameState({ status: "building", building, activeCard });
     if (gridItemFilter) {
       setGameboardTileSelectionFilter(() => gridItemFilter);
@@ -57,7 +65,6 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
     setMouseTracking(true);
     setCursorIcon(building.icon);
     setOnGameboardTileSelection(() => (gridItem: GridItem | null) => {
-      console.log(gridItem, 'onGameboardTileSelection')
       if (gridItem) {
         updateGridItem(gridItem.y, gridItem.x, (gridItem) => {
           return { ...gridItem, building };
@@ -73,13 +80,11 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     initGrid();
     initDeck();
-    drawCard();
-    drawCard();
   }, []);
 
   useEffect(() => {
     // Core gameloop logic here
-    drawCard();
+    refreshHand()
     
     // Earn Funding
     let pop = getPopulation()
@@ -88,12 +93,19 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
 
   }, [turn]);
 
+  useEffect(() => {
+    if (dayOfWeek === "Sunday") {
+      setGameState({ status: "unlockCard" });
+    }
+  }, [dayOfWeek]);
+
   const contextValue = { 
     gameState, 
     startBuildingGameState,
     funding,
     addFunding,
-    trySpendFunding
+    trySpendFunding,
+    resolveCardUnlock
   };
 
   return (

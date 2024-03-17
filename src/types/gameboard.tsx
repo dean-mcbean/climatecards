@@ -24,4 +24,10 @@ export type GridItem = {
   warning?: GridItemWarning;
   x: number;
   y: number;
+  cache?: {
+    adjacentToWater?: boolean;
+    adjacentToPopulation?: boolean;
+    nextToWater?: boolean;
+    nextToPopulation?: boolean;
+  };
 };

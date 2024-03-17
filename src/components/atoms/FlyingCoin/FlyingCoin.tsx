@@ -6,7 +6,7 @@ import { Bezier } from "bezier-js";
 import { TbCoinFilled } from "react-icons/tb";
 
 export interface FlyingCoinProps {
-  id?: string;
+  coin_id?: string;
   start_location: {
     x: number;
     y: number;
@@ -19,7 +19,7 @@ export interface FlyingCoinProps {
   onFinish?: (id?: string) => void;
 }
 
-export const FlyingCoin = ({ id, start_location, end_location, duration, onFinish }: FlyingCoinProps) => {
+export const FlyingCoin = ({ coin_id, start_location, end_location, duration, onFinish }: FlyingCoinProps) => {
   const positionRef = useRef(start_location);
   const [_, setRender] = useState(0); // This state is used to trigger re-renders
   const finished = useRef(false);
@@ -43,7 +43,8 @@ export const FlyingCoin = ({ id, start_location, end_location, duration, onFinis
         finished.current = true;
         setRender(prev => prev + 1); // Trigger a re-render
       }
-      onFinish?.(id);
+      console.log("RUNNING NOW", coin_id)
+      onFinish?.(coin_id);
       return;
     };
     positionRef.current = b.get(t);
@@ -65,7 +66,7 @@ export const FlyingCoin = ({ id, start_location, end_location, duration, onFinis
   }, [startAnimation]);
 
   return (
-    <div css={flyingCoinContainer(positionRef.current, finished.current)}>
+    <div key={coin_id} css={flyingCoinContainer(positionRef.current, finished.current)}>
       <div css={flyingCoinScaleWrapper}>
         <TbCoinFilled />
       </div>

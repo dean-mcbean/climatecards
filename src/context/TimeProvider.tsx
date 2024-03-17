@@ -10,8 +10,8 @@ export type TimeContextType = {
   upcomingEvents: HazardEvent[];
   currentEvent: HazardEvent | null;
   pastEvents: HazardEvent[];
-  getDayOfWeek: () => string;
-  getWeek: () => number;
+  dayOfWeek: string;
+  week: number;
 };
 
 
@@ -21,13 +21,15 @@ export const TimeContext = React.createContext<TimeContextType>({
   upcomingEvents: [],
   currentEvent: null,
   pastEvents: [],
-  getDayOfWeek: () => "",
-  getWeek: () => 0,
+  dayOfWeek: "Monday",
+  week: 1
 });
 
 
 export const TimeProvider = ({ children }: {children: ReactNode}) => {
   const [turn, setTurn] = React.useState(1);
+  const [dayOfWeek, setDayOfWeek] = React.useState("Monday");
+  const [week, setWeek] = React.useState(1);
   const nextTurn = () => {
     setTurn((prevTurn) => {
       prevTurn += 1;
@@ -43,25 +45,23 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
       }
 
       // Check for current event ending
-      console.log(currentEvent, prevTurn)
       if (currentEvent !== null && currentEvent.end_turn === prevTurn) {
         setPastEvents((prevEvents) => [...prevEvents, currentEvent]);
         setCurrentEvent(null);
         palette.clearFilter();
       }
 
+      // Update day of week
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      setDayOfWeek(days[prevTurn % 7]);
+
+      // Update week
+      setWeek(Math.floor(prevTurn / 7) + 1);
+
       return prevTurn;
     });
 
   }
-  const getDayOfWeek = () => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[turn % 7];
-  }
-  const getWeek = () => {
-    return Math.floor(turn / 7) + 1;
-  }
-
   const [upcomingEvents, setUpcomingEvents] = React.useState<HazardEvent[]>([]);
   const [currentEvent, setCurrentEvent] = React.useState<HazardEvent | null>(null);
   const [pastEvents, setPastEvents] = React.useState<HazardEvent[]>([]);
@@ -72,8 +72,8 @@ export const TimeProvider = ({ children }: {children: ReactNode}) => {
     upcomingEvents, 
     currentEvent, 
     pastEvents,
-    getDayOfWeek,
-    getWeek
+    dayOfWeek,
+    week
   };
 
   useEffect(() => {

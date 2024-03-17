@@ -2,17 +2,17 @@
 import { useCardContext } from '../../../context/CardProvider';
 import { Card } from '../../molecules/Card/Card';
 import { Card as CardType } from '../../../types/cards';
-import { CardhandPanelContainer, cardContainer, cardhandPanelInner, dashboardContainer, moneyButton, nextTurnButton, openDeckButton, populationButton } from './CardhandPanel.styles';
+import { CardhandPanelContainer, cardContainer, cardhandPanelInner, dashboardButton, dashboardContainer, dashboardLine, moneyButton, populationButton } from './CardhandPanel.styles';
 import { useTimeContext } from '../../../context/TimeProvider';
 import { useGameboardContext } from '../../../context/GameboardProvider';
 import { useGameloopContext } from '../../../context/GameloopProvider';
 import { useHazardContext } from '../../../context/HazardProvider';
 import { useUIContext } from '../../../context/UIProvider';
 import { useMemo, useState } from 'react';
-import { BsFillPeopleFill } from "react-icons/bs";
-import { RiCoinsFill } from "react-icons/ri";
+import { IoPeopleCircle } from "react-icons/io5";
 import { FlyingCoinProps } from '../../atoms/FlyingCoin/FlyingCoin';
 import { TbCardsFilled } from "react-icons/tb";
+import { TbCoinFilled } from "react-icons/tb";
 
 export const CardhandPanel = () => {
   const cardContext = useCardContext();
@@ -32,7 +32,7 @@ export const CardhandPanel = () => {
   const [removedCardIds, setRemovedCardIds] = useState<number[]>([]);
 
   const cardClicked = (card: CardType) => {
-    if (!trySpendFunding(card.cost)) {
+    if ((card.id && removedCardIds.includes(card.id)) || !trySpendFunding(card.cost)) {
       return;
     }
     
@@ -64,15 +64,17 @@ export const CardhandPanel = () => {
 
   return (
     <div css={CardhandPanelContainer} className="hand">
-      <div css={openDeckButton} onClick={() => setDeckSideDrawerExpanded(true)}><TbCardsFilled />View Deck</div>
       <div css={dashboardContainer}>
-        <div id="funding" css={moneyButton}><span>{gameloopContext.funding}</span><RiCoinsFill /></div>
-        <div css={nextTurnButton} onClick={nextTurn}>NEXT DAY</div>
-        <div css={populationButton}><span>{population}</span><BsFillPeopleFill /></div>
+        <div css={dashboardButton} onClick={() => setDeckSideDrawerExpanded(true)}><TbCardsFilled /><span>View Deck</span></div>
+        <div id="funding" css={moneyButton}><TbCoinFilled /><span>{gameloopContext.funding}</span></div>
+        <div css={dashboardButton} onClick={nextTurn}><span>Next Day</span></div>
+        <div css={populationButton}><IoPeopleCircle /><span>{population}</span></div>
+        <div></div>
+        <div css={dashboardLine}></div>
       </div>
       <div css={cardhandPanelInner}>
         {hand.map((card, index) => (
-          <div key={card.id} css={cardContainer(index, !!card.id && !!removedCardIds.includes(card.id))}>
+          <div key={card.id} css={cardContainer(index, !!card.id && !!removedCardIds.includes(card.id), card.cost <= gameloopContext.funding)}>
             <Card card={card} onCardClick={cardClicked} />
           </div>
         ))}

@@ -3,8 +3,8 @@ import { palette } from "../../../theme/palette";
 
 export const CardhandPanelContainer = css`
   width: 100%;
-  height: 300px;
-  padding: 12px;
+  height: 310px;
+  padding-top: 17px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -26,32 +26,40 @@ export const cardhandPanelInner = css`
   box-sizing: border-box;
 `;
 
-export const nextTurnButton = css`
+export const dashboardButton = css`
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: ${palette.blue(500)};
-  border: 1px solid ${palette.blue(530)};
+  background-color: #1e758f;
   color: ${palette.primary(100)};
-  box-shadow: 0 0 8px 0px ${palette.blue(480, 0.2)}, inset 0 0 14px 7px ${palette.blue(520, 1)};
   border-radius: 80px;
-  padding: 0 1.5rem;
-  padding-top: 3px;
+  padding: 0 20px;
   cursor: pointer;
   transition: background-color 0.1s ease-in-out, padding 0.2s ease-in-out;
   font-family: "Baloo Bhaina 2", cursive;
-  font-size: 1.0rem;    
-  font-weight: 600;
+  font-size: 1.1rem;    
+  font-weight: 500;
   text-shadow: 0 1px 0px ${palette.blue(600)};
   height: 100%;
-  margin: 0 -10px;
+  margin: 0 8px;
   z-index: 5;
+  gap: 8px;
 
   &:hover {
-    background-color: ${palette.blue(520)};
-    padding-left: 2rem;
-    padding-right: 2rem;
+    background-color: #0f5a71;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  svg {
+    margin-left: -8px;
+    width: 24px;
+    height: 24px;
+  }
+
+  span {
+    padding-top: 3px;
   }
 `;
 
@@ -59,10 +67,11 @@ export const dashboardContainer = css`
   position: absolute;
   top: -40px;
   height: 40px;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
+  
   width: 100%;
   box-sizing: border-box;
   pointer-events: none;
@@ -72,54 +81,63 @@ export const dashboardContainer = css`
   }
 `;
 
+export const dashboardLine = css`
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #1e758f40;
+`;
+
 export const moneyButton = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  height: 24px;
-  min-width: 24px;
-  padding: 0 8px 0 9px;
-  border-radius: 80px;
-  box-sizing: border-box;
-  gap: 0.4rem;
+  background: #ffb443;
   font-family: "Baloo Bhaina 2", cursive;
-  color: #d27f33;
-  font-weight: 600;
-  font-size: 1.4rem;
-  border-radius: 20px 0 0 20px;
-  padding-right: 26px;
+  color: #b15b00;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 1.5rem;
+  height: 32px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+  box-shadow: inset -2px -4px 1px -2px #cd7c00, inset -24px -24px 16px -22px #cd7c00BB;
+  z-index: 900;
+  align-items: center;
+  padding: 0 16px 0 2px;
+  
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 
   span {
-    padding-top: 5px;
-  }
-  svg {
-    margin-right: -3px;
-    margin-left: -2px;
+    padding-top: 6px;
   }
 `
 
 export const populationButton = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  height: 24px;
-  min-width: 24px;
-  padding: 0 8px;
-  border-radius: 80px;
-  box-sizing: border-box;
-  gap: 0.4rem;
+  background: #76e77e;
   font-family: "Baloo Bhaina 2", cursive;
-  color: #8b3438;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 1.4rem;
-  border-radius: 0 20px 20px 0;
-  padding-left: 26px;
+  color: #268143;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 1.5rem;
+  height: 32px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+  box-shadow: inset -2px -4px 1px -2px #1d6d488a, inset -24px -24px 16px -22px #1d6d4861;
+  z-index: 900;
+  align-items: center;
+  padding: 0 16px 0 2px;
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 
   span {
-    padding-top: 5px;
+    padding-top: 6px;
   }
 `
 
@@ -153,7 +171,7 @@ const collapse = keyframes`
   }
 `
 
-export const cardContainer = (index: number, shouldCollapse: boolean) => css`
+export const cardContainer = (index: number, shouldCollapse: boolean, canAfford: boolean) => css`
   width: 150px;
   flex-shrink: 1;
   position: relative;
@@ -162,36 +180,17 @@ export const cardContainer = (index: number, shouldCollapse: boolean) => css`
   margin: 0 7px;
   ${
     shouldCollapse ? 
-    css`animation: ${collapse} 0.3s ease-in-out both;` : 
+    css`animation: ${collapse} 0.3s ease-in-out both;
+        pointer-events: none;` : 
     css`animation: ${expand} 0.15s ease-in-out both;` 
   }
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out, filter 0.2s ease-in-out;
+  opacity: ${canAfford ? 1 : 0.3};
+  filter: ${canAfford ? 'none' : 'grayscale(100%)'};
+  pointer-events: ${canAfford ? 'all' : 'none'};
 
   > div {
     z-index: ${index};
     position: absolute;
-  }
-`
-
-export const openDeckButton = css`
-  position: absolute;
-  top: -36px;
-  left: 10px;
-  color: ${palette.blue(700)};
-  height: 36px;
-  width: 36px;
-  cursor: pointer;
-  z-index: 100;
-  transition: transform 0.1s ease-in-out, color 0.1s ease-in-out;
-  will-change: transform, color;
-
-  &:hover {
-    transform: scale(1.1);
-    color: ${palette.blue(800)};
-  }
-
-  svg {
-    width: 100%;
-    height: 100%;
   }
 `

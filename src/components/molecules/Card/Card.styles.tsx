@@ -6,16 +6,19 @@ const cardTypeColors: { [key in Card['type']]: any } = {
     background: '#f16134',
     border: '#bb4622',
     hardShadow: '#813325',
+    text: '#631e11',
   },
   'funding': {
     background: '#fd9d21',
     border: '#c36300',
-    hardShadow: '#b95d04',
+    hardShadow: '#a74700',
+    text: '#7d3e00',
   },
   'research': {
     background: '#4aa7c0',
-    border: '#005e7e',
+    border: '#00739b',
     hardShadow: '#125f6f',
+    text: '#003f4f',
   }
 }
 
@@ -39,9 +42,8 @@ export const cardContainer = (type: string) => {
   flex-direction: column;
   animation: ${fadein} 0.4s ease-in-out 0.2s backwards;
   background: linear-gradient(160deg, ${colors.background} 0%, ${colors.border} 100%);
-  box-shadow: inset -3px -3px 1px 3px ${colors.hardShadow}, inset -42px 0px 1px -21px ${colors.border}20, 2px 2px 2px 0px #2d5c6b20, 0px 6px 6px 0px #0242;
+  box-shadow: inset -3px -3px 1px 3px ${colors.hardShadow}BB, inset -42px 0px 1px -21px ${colors.border}20, 2px 2px 2px 0px #2d5c6b20, 0px 6px 6px 0px #0242;
   border-radius: 14px 14px 8px 8px;
-  overflow: hidden;
   position: relative;
   width: 150px;
   cursor: pointer;
@@ -99,7 +101,7 @@ export const cardContent = (type: string) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: white;
+  color: ${colors.hardShadow};
   text-shadow: 0px 1px 0px ${colors.border}50, 1px 0px 0px ${colors.border}50;
   position: relative;
 
@@ -117,16 +119,44 @@ export const cardContent = (type: string) => {
 
     &.card-image {
       align-items: center;
-
-      svg {
-        width: 80px;
-        height: 80px;
-        color: ${colors.hardShadow};
-      }
+    }
+    &.card-text {
+      color: white;
     }
   }
 `;
 }
+
+export const cardContentImage = css`
+  svg {
+    width: 80px;
+    height: 80px;
+  }
+`;
+
+export const cardContentItems = css`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  margin-top: 2px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  gap: 4px 0;
+`;
+
+export const cardContentItem = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+`;
 
 export const cardHeader = css`
   color: white;
@@ -152,22 +182,31 @@ export const cardFooter = (type: string) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  padding: 0;
-  box-shadow: 0px 0px 4px 0px ${colors.hardShadow}60;
+  padding: 0 10px;
+  color: ${colors.text};
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  
+  p {
+    margin-top: 4px;
+  }
 `
 };
 
 export const cardCost = (type: string) => {
   
   return css`
+  position: absolute;
+  top: -4px;
+  left: -4px;
   background: #ffb443;
   font-family: "Baloo Bhaina 2", cursive;
-  color: #5a2f12;
-  border-radius: 0 0 0 8px;
+  color: #a35400;
+  border-radius: 30px;
   font-weight: 800;
   font-size: 1.2rem;
-  width: 32px;
+  min-width: 32px;
   height: 32px;
   padding: 4px 0 0 0;
   box-sizing: border-box;
@@ -178,71 +217,22 @@ export const cardCost = (type: string) => {
   flex-grow:1;
   max-width: 50%;
   box-shadow: inset -2px -4px 1px -2px #cd7c00, inset -24px -24px 16px -22px #cd7c00BB;
-
-
-  opacity: 0.9;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    position: relative;
-    top: -2px;
-  }
+  z-index: 20;
 `;
 }
 
-/* 
-export const cardCost = (type: string) => {
-  const colors = cardTypeColors[type as Card['type']];
-  
-  return css`
-  background: #feb84d;
-  font-family: "Baloo Bhaina 2", cursive;
-  color: #5a2f12;
-  border-radius: 20px;
-  font-weight: 800;
-  font-size: 1.2rem;
-  border: 2px solid ${colors.hardShadow};
-  box-shadow: inset -1px -1px 2px 1px #c06728, inset 1px 1px 1px 0px #fff;
-  width: 32px;
-  height: 32px;
-  padding-top: 6px;
-  box-sizing: border-box;
+
+export const cardOverflowHide = css`
+  overflow: hidden;
+  height: 100%;
+  position: relative;
+  width: 100%;
+  border-radius: 14px 14px 8px 8px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 100%;
+  flex-direction: column;
 `;
-}
- */
-export const cardConstructionTurns =  (type: string) => {
-  
-  return css`
-  background: #7ee34c;
-  color: #11313c;
-  font-family: "Baloo Bhaina 2", cursive;
-  border-radius: 0 0 8px 0;
-  font-weight: 800;
-  font-size: 1.2rem;
-  width: 32px;
-  height: 32px;
-  padding: 4px 0 0 0;
-  gap: 6px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow:1;
-  box-shadow: inset -6px -2px 1px 0px #599b51, inset -28px -24px 16px -22px #599b5190, inset 4px 0px 2px -4px #599b51DD;
-  opacity: 0.9;
-  
-  svg {
-    width: 16px;
-    height: 16px;
-    position: relative;
-    top: -2px;
-  }
-`;
-}
+
 
 export const cardBevel = css`
   position: absolute;
@@ -256,17 +246,19 @@ export const cardBevel = css`
   opacity: 0.2;
 `;
 
-export const cardFree = (type: string) => {
+
+export const cardCostShadow = (type: string) => {
   const colors = cardTypeColors[type as Card['type']];
   
   return css`
-  color: ${colors.hardShadow};
-  font-family: "Baloo Bhaina 2", cursive;
-  font-weight: 800;
-  font-size: 1.4rem;
-  padding-top: 7px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  background: ${colors.border}20;
+  border-radius: 30px;
+  min-width: 34px;
+  height: 34px;
+  max-width: 50%;
+  z-index: 10;
 `;
 }

@@ -58,7 +58,7 @@ const TurnItem = ({turn, index, upcoming_turn_events} : {
 }
 
 export const TurnCounter = () => {
-  const { upcomingEvents, pastEvents, currentEvent, turn, getDayOfWeek, getWeek } = useTimeContext();
+  const { upcomingEvents, pastEvents, currentEvent, turn, dayOfWeek, week } = useTimeContext();
 
   const upcoming_turn_events = new Array(dayRange + 1).fill(null);
   const trySet = (turnIndex: number, status: string, event: HazardEvent | null) => {
@@ -109,8 +109,8 @@ export const TurnCounter = () => {
         {previous_turns}
       </div>
       <div css={currentTurnContainer}>
-        {getDayOfWeek()}
-        <div css={subtitle}>WEEK {getWeek()}</div>
+        {dayOfWeek}
+        <div css={subtitle}>WEEK {week}</div>
       </div>
       <div css={upcomingTurnContainer}>
         {upcoming_turns}

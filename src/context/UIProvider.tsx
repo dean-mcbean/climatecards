@@ -18,6 +18,8 @@ export type UIContextType = {
   createFundingFlyingCoins: () => void;
   deckSideDrawerExpanded: boolean;
   setDeckSideDrawerExpanded: (expanded: boolean) => void;
+  unlockCardPanelExpanded: boolean;
+  setUnlockCardPanelExpanded: (expanded: boolean) => void;
 };
 
 type Position = { x: number, y: number };
@@ -37,6 +39,8 @@ const UIContext = React.createContext<UIContextType>({
   createFundingFlyingCoins: () => {},
   deckSideDrawerExpanded: false,
   setDeckSideDrawerExpanded: () => {},
+  unlockCardPanelExpanded: false,
+  setUnlockCardPanelExpanded: () => {},
 });
 
 export const UIProvider = ({ children }: { children: ReactNode }) => {
@@ -44,6 +48,7 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
   const [hoveredTile, setHoveredTileState] = useState<GridItem | null>(null);
 
   const [deckSideDrawerExpanded, setDeckSideDrawerExpanded] = useState(false);
+  const [unlockCardPanelExpanded, setUnlockCardPanelExpanded] = useState(false);
 
   // Known positions
   const [gameboardTilePositions, setGameboardTilePositions] = useState<GameboardTilePositions>([]);
@@ -72,16 +77,19 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
 
   const createFlyingCoins = (coinlist: Partial<FlyingCoinProps>[]) => {
     for (let i = 0; i < coinlist.length; i++) {
-      coinlist[i].id = `${Date.now()}-${i}`;
+      if (flyingCoins.length + i + 1 > 16) break;
+      coinlist[i].coin_id = `${Date.now()}-${i}`;
       if (!coinlist[i].start_location && fundingPosition) coinlist[i].start_location = fundingPosition;
       if (!coinlist[i].end_location && fundingPosition) coinlist[i].end_location = fundingPosition;
       if (!coinlist[i].duration) coinlist[i].duration = 800;
       coinlist[i].onFinish = (id) => {
         setFlyingCoins((coins) => {
-          return coins.filter((coin) => coin.id !== id);
+          console.log(coins, id)
+          return coins.filter((coin) => coin.coin_id !== id);
         });
       }
     }
+    coinlist = coinlist.splice(0, 16 - flyingCoins.length);
     setFlyingCoins((coins) => {
       return [...coins, ...coinlist as FlyingCoinProps[]];
     });
@@ -152,6 +160,8 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
     createFundingFlyingCoins,
     deckSideDrawerExpanded,
     setDeckSideDrawerExpanded,
+    unlockCardPanelExpanded,
+    setUnlockCardPanelExpanded
   };
 
   return (
@@ -159,7 +169,7 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
       {children}
       <Cursor onClick={triggerGameboardTileSelectionEvent} />
       { flyingCoins.map((coin, index) => {
-        return <FlyingCoin key={coin.id} start_location={coin.start_location} end_location={coin.end_location} duration={coin.duration} />;
+        return <FlyingCoin key={coin.coin_id} coin_id={coin.coin_id} start_location={coin.start_location} end_location={coin.end_location} duration={coin.duration} onFinish={coin.onFinish}/>;
       })}
     </UIContext.Provider>
   );

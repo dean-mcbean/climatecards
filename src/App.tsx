@@ -1,11 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { appContainer, upperAppContainer } from "./App.styles";
-import { WeatherEffectOverlay } from "./components/molecules/WeatherEffectOverlay/WeatherEffectOverlay";
-import { CardhandPanel } from "./components/organisms/CardhandPanel/CardhandPanel";
 import { DeckSideDrawer } from "./components/organisms/DeckSidedrawer/DeckSidedrawer";
-import { Gameboard } from "./components/organisms/Gameboard/Gameboard";
-import { UIOverlay } from "./components/organisms/UIOverlay/UIOverlay";
+import MainGame from "./components/pages/MainGame/MainGame";
 import { CardProvider } from "./context/CardProvider";
 import { GameboardProvider } from "./context/GameboardProvider";
 import { GameloopProvider } from "./context/GameloopProvider";
@@ -22,14 +18,7 @@ export default function App() {
           <HazardProvider>
             <CardProvider>
               <GameloopProvider>
-                <div css={appContainer}>
-                  <WeatherEffectOverlay opacity="0.3" zIndex="0"/>
-                  <div css={upperAppContainer}>
-                    <Gameboard />
-                    <UIOverlay />
-                  </div>
-                  <CardhandPanel />
-                </div>
+                <MainGame />
                 <DeckSideDrawer />
               </GameloopProvider>
             </CardProvider>

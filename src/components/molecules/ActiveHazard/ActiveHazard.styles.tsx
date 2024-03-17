@@ -6,7 +6,7 @@ export const activeHazardContainer = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 120px;
+  height: 83px;
 `;
 
 export const activeHazardHeader = (isHazard: boolean) => css`
