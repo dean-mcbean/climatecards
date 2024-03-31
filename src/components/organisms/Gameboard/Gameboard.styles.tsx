@@ -26,7 +26,6 @@ export const gameboardContainerOverlay = css`
   position: relative;
   width: 100%;
   flex-grow: 1;
-  padding-top: 150px;
 `;
 
 export const gameBoardDepth = css`

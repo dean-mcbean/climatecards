@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { useGameboardContext } from "../../../context/GameboardProvider";
-import { WeatherEffectOverlay } from "../../molecules/WeatherEffectOverlay/WeatherEffectOverlay";
 import { depthItem, gameBoardDepth, gameboardContainer, gameboardContainerParent, rowContainer, gameboardContainerOverlay } from "./Gameboard.styles";
 import { GameboardTile } from "./GameboardTile/GameboardTile";
 

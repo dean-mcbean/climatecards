@@ -7,6 +7,7 @@ export const activeHazardContainer = css`
   align-items: center;
   justify-content: center;
   height: 83px;
+  padding: 0rem 2rem 0rem 2rem;
 `;
 
 export const activeHazardHeader = (isHazard: boolean) => css`
@@ -17,7 +18,6 @@ export const activeHazardHeader = (isHazard: boolean) => css`
   justify-content: center;
   color: ${isHazard ? palette.blue(700) : palette.blue(500)};
   transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
-  opacity: ${isHazard ? 1 : 0.3};
   font-size: 2.7rem;
   font-family: "Baloo Bhaina 2", cursive;
   font-weight: 500;

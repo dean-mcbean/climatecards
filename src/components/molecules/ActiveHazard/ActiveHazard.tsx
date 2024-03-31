@@ -5,8 +5,8 @@ import { activeHazardContainer, activeHazardContent, activeHazardHeader } from "
 import { IoIosSunny } from "react-icons/io";
 
 export const ActiveHazard = () => {
-  const { currentEvent } = useTimeContext();
-  if (!currentEvent) return (
+  const { hazard } = useTimeContext();
+  if (!hazard) return (
     <div css={activeHazardContainer}>
       <div css={activeHazardHeader(false)}><IoIosSunny css={{
         position: 'relative',
@@ -19,9 +19,9 @@ export const ActiveHazard = () => {
 
   return (
     <div css={activeHazardContainer}>
-      <div css={activeHazardHeader(true)}>{currentEvent?.icon}{currentEvent?.name}</div>
+      <div css={activeHazardHeader(true)}>{hazard}</div>
       <div css={activeHazardContent(true)}>
-        {currentEvent?.description}
+        Description & Icon coming soon!
       </div>
     </div>
   )

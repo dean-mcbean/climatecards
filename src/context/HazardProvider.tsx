@@ -8,14 +8,12 @@ import { randomInt } from "../utils/generic";
 
 
 export type HazardContextType = {
-  resolveGridItemWarning: (gridItem: GridItem) => void;
   reduceInundation: (gridItem: GridItem) => void;
   reduceBuildingHealth: (gridItem: GridItem, damage?: number) => void;
 };
 
 
 export const HazardContext = React.createContext<HazardContextType>({
-  resolveGridItemWarning: () => {},
   reduceInundation: () => {},
   reduceBuildingHealth: () => {}
 });
@@ -23,9 +21,52 @@ export const HazardContext = React.createContext<HazardContextType>({
 
 export const HazardProvider = ({ children }: {children: ReactNode}) => {
 
-  const { turn, currentEvent } = useTimeContext();
+  const { turn, hazard } = useTimeContext();
   const { grid, getMatchingGridItems, updateGridItem, gridDimensions, updateRandomGridItems } = useGameboardContext();
 
+  const reduceInundation = (gridItem: GridItem) => {
+    if (gridItem.inundation > 0) {
+      updateGridItem(gridItem.y, gridItem.x, (item) => {
+        return { ...item, inundation: item.inundation - 1 };
+      });
+    }
+  }
+
+  const reduceBuildingHealth = (gridItem: GridItem, damage: number = 1) => {
+    if (gridItem.building) {
+      updateGridItem(gridItem.y, gridItem.x, (item) => {
+        const newItem = { ...item};
+        if (!newItem.building) {
+          return newItem;
+        }
+        newItem.building.health -= damage;
+        if (newItem.building.health <= 0) {
+          newItem.building = undefined;
+        }
+        return newItem;
+      });
+    }
+  }
+
+
+  const contextValue = {
+    reduceInundation,
+    reduceBuildingHealth
+  };
+  
+  return (
+    <HazardContext.Provider value={contextValue}>
+      {children}
+    </HazardContext.Provider>
+  );
+};
+
+
+export const useHazardContext = () => {
+  return React.useContext(HazardContext);
+}
+
+/* 
   useEffect(() => {
     const waves = getMatchingGridItems((item) => !!item.waveStrength);
     
@@ -98,47 +139,4 @@ export const HazardProvider = ({ children }: {children: ReactNode}) => {
         });
       }
     }
-  }
-
-  const reduceInundation = (gridItem: GridItem) => {
-    if (gridItem.inundation > 0) {
-      updateGridItem(gridItem.y, gridItem.x, (item) => {
-        return { ...item, inundation: item.inundation - 1 };
-      });
-    }
-  }
-
-  const reduceBuildingHealth = (gridItem: GridItem, damage: number = 1) => {
-    if (gridItem.building) {
-      updateGridItem(gridItem.y, gridItem.x, (item) => {
-        const newItem = { ...item};
-        if (!newItem.building) {
-          return newItem;
-        }
-        newItem.building.health -= damage;
-        if (newItem.building.health <= 0) {
-          newItem.building = undefined;
-        }
-        return newItem;
-      });
-    }
-  }
-
-
-  const contextValue = {
-    resolveGridItemWarning,
-    reduceInundation,
-    reduceBuildingHealth
-  };
-  
-  return (
-    <HazardContext.Provider value={contextValue}>
-      {children}
-    </HazardContext.Provider>
-  );
-};
-
-
-export const useHazardContext = () => {
-  return React.useContext(HazardContext);
-}
+  } */

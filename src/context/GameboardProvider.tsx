@@ -171,7 +171,7 @@ export const GameboardProvider = ({ children }: { children: ReactNode }) => {
   const getPopulation = () => {
     return grid.reduce((acc, row) => {
       return acc + row.reduce((acc, item) => {
-        if (item.building?.population && item.building?.constructionTurns === 0) {
+        if (item.building?.population && !item.building?.isUnderConstruction) {
           return acc + item.building.population;
         }
         return acc;

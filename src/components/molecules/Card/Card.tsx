@@ -27,7 +27,6 @@ export const Card = ({ card, onCardClick }: CardProps) => {
               {card.building.icon}
             </div> 
             <div css={cardContentItems}>
-              <div css={cardContentItem}>{card.building.maxConstructionTurns}<FaClock /></div>
               <div css={cardContentItem}>{card.building.maxHealth}<FaShieldAlt /></div>
               <div css={cardContentItem}>{card.building.population}<BsFillPeopleFill /></div>
             </div> 

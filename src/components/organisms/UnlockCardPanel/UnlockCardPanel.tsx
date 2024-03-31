@@ -12,7 +12,7 @@ import { useGameloopContext } from '../../../context/GameloopProvider';
 
 
 export const UnlockCardPanel = () => {
-  const { week } = useTimeContext();
+  const { year } = useTimeContext();
   const { deck } = useCardContext();
   const { resolveCardUnlock } = useGameloopContext();
   const [unlockableCards, setUnlockableCards] = useState<CardType[]>([]);
@@ -32,7 +32,7 @@ export const UnlockCardPanel = () => {
   return (
     <div css={unlockCardPanel(true)} >
       <div css={unlockCardPanelContainer} >
-        <h1>Survived {week - 1} Week{week - 1 > 1 ? 's' : ''}</h1>
+        <h1>{year}</h1>
         <p>Choose a new card to add to your deck!</p>
         <div css={unlockableCardContainer}>
           {unlockableCards.map((card) => (

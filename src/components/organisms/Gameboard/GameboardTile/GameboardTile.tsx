@@ -21,7 +21,7 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
 
   const { turn } = useTimeContext();
   const { gameState } = useGameloopContext();
-  const { resolveGridItemWarning, reduceInundation, reduceBuildingHealth } = useHazardContext();
+  const { reduceInundation, reduceBuildingHealth } = useHazardContext();
   const { hoveredTile, selectableGameboardTilePositions } = useUIContext();
   const {tileWidth, updateGridItem} = useGameboardContext();
   const [countdown, setCountdown] = useState({
@@ -34,14 +34,14 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
   if (gridItem.warning) console.log(gridItem.warning);
   const building = gridItem.building && !gridItem.inundation ? (
     <div css={buildingContainer}>
-      {gridItem.building.constructionTurns == 0 && <div css={buildingHealth(gridItem)}>
+      {!gridItem.building.isUnderConstruction && <div css={buildingHealth(gridItem)}>
         {gridItem.building.maxHealth && 
         Array.from({ length: gridItem.building.maxHealth }, (_, index) => (
           <div key={index} css={buildingHealthPip(gridItem, index)} />
         ))}
       </div>
       }
-      {gridItem.building.constructionTurns == 0 ? gridItem.building.icon : <LuConstruction />}
+      {!gridItem.building.isUnderConstruction ? gridItem.building.icon : <LuConstruction />}
       <div css={buildingShadow(gridItem)}></div>
     </div>
   ) : null;
@@ -58,7 +58,7 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
       </div>
       <div css={inundationBuilding(gridItem.inundation)}>
         {gridItem.building ? 
-        gridItem.building.constructionTurns == 0 ? 
+        !gridItem.building.isUnderConstruction ? 
         gridItem.building.icon : <LuConstruction /> : null}
       </div>
     </div>
@@ -74,8 +74,6 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
   if (gridItem.warning) {
     console.log(gridItem.warning);
     if (gridItem.warning.endTurn === turn) {
-      console.log('remove warning');
-      resolveGridItemWarning(gridItem);
       warning = null;
     }
   }
@@ -111,12 +109,6 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
 
   // Daily checks
   useEffect(() => {
-    // Progress Warnings
-    if (gridItem.warning) {
-      if (gridItem.warning.endTurn === turn) {
-        resolveGridItemWarning(gridItem);
-      }
-    }
     // Progress Inundation
     if (gridItem.inundation) {
       if (gridItem.inundation === 1) {
@@ -126,37 +118,18 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
     }
     // Progress Building Construction
     if (gridItem.building) {
-      const constructionTurns = gridItem.building.constructionTurns;
-      if (constructionTurns > 0) {
+      const isUnderConstruction = gridItem.building.isUnderConstruction;
+      if (isUnderConstruction) {
         updateGridItem(gridItem.y, gridItem.x, (gridItem: GridItem) => {
           if (gridItem.building) {
-            return { ...gridItem, building: { ...gridItem.building, constructionTurns: constructionTurns - 1 } };
+            return { ...gridItem, building: { ...gridItem.building, isUnderConstruction: false } };
           }
-          setCountdown({
-            value: 0,
-            max: 0,
-            color: palette.green(600),
-            backgroundColor: palette.brown()
-          });
           return gridItem;
         });
       }
     }
 
   }, [turn]);
-
-  useEffect(() => {
-    // Update Countdown 
-    if (gridItem.building) {
-      const constructionTurns = gridItem.building.constructionTurns;
-      setCountdown({
-        value: constructionTurns,
-        max: gridItem.building.maxConstructionTurns,
-        color: palette.green(600),
-        backgroundColor: palette.brown()
-      });
-    }
-  }, [gridItem.building]);
 
   return (
     <div css={GameboardTileContainer(tileWidth)}>

@@ -99,7 +99,7 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
     // Create flying coins from every populated gameboard tile to funding
     if (!fundingPosition) return
     const newFlyingCoins: Partial<FlyingCoinProps>[] = [];
-    const matchingGridItems = getMatchingGridItems((gridItem) => !!gridItem.building?.population && gridItem.building?.population > 0 && gridItem.building?.constructionTurns === 0);
+    const matchingGridItems = getMatchingGridItems((gridItem) => !!gridItem.building?.population && gridItem.building?.population > 0 && !gridItem.building?.isUnderConstruction);
     matchingGridItems.forEach((gridItem) => {
       const pos = document.querySelector(`[aria-rowindex="${gridItem.y}"][aria-colindex="${gridItem.x}"]`)?.getBoundingClientRect();
       if (pos && gridItem.building?.population) {

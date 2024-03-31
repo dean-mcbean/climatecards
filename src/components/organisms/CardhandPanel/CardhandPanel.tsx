@@ -2,7 +2,7 @@
 import { useCardContext } from '../../../context/CardProvider';
 import { Card } from '../../molecules/Card/Card';
 import { Card as CardType } from '../../../types/cards';
-import { CardhandPanelContainer, cardContainer, cardhandPanelInner, dashboardButton, dashboardContainer, dashboardLine, moneyButton, populationButton } from './CardhandPanel.styles';
+import { CardhandPanelContainer, cardContainer, cardhandPanelInner, cardhandPanelSideInner, dashboardButton, dashboardContainer, dashboardLine, moneyButton, populationButton } from './CardhandPanel.styles';
 import { useTimeContext } from '../../../context/TimeProvider';
 import { useGameboardContext } from '../../../context/GameboardProvider';
 import { useGameloopContext } from '../../../context/GameloopProvider';
@@ -13,6 +13,7 @@ import { IoPeopleCircle } from "react-icons/io5";
 import { FlyingCoinProps } from '../../atoms/FlyingCoin/FlyingCoin';
 import { TbCardsFilled } from "react-icons/tb";
 import { TbCoinFilled } from "react-icons/tb";
+import { FaPlay } from "react-icons/fa";
 
 export const CardhandPanel = () => {
   const cardContext = useCardContext();
@@ -64,13 +65,9 @@ export const CardhandPanel = () => {
 
   return (
     <div css={CardhandPanelContainer} className="hand">
-      <div css={dashboardContainer}>
-        <div css={dashboardButton} onClick={() => setDeckSideDrawerExpanded(true)}><TbCardsFilled /><span>View Deck</span></div>
-        <div id="funding" css={moneyButton}><TbCoinFilled /><span>{gameloopContext.funding}</span></div>
-        <div css={dashboardButton} onClick={nextTurn}><span>Next Day</span></div>
-        <div css={populationButton}><IoPeopleCircle /><span>{population}</span></div>
-        <div></div>
-        <div css={dashboardLine}></div>
+      <div css={cardhandPanelSideInner}>
+        <div css={dashboardButton} onClick={() => setDeckSideDrawerExpanded(true)}><TbCardsFilled /></div>
+        <div id="funding" css={moneyButton}><TbCoinFilled /><span>{gameloopContext.funding}<span>mil.</span></span></div>
       </div>
       <div css={cardhandPanelInner}>
         {hand.map((card, index) => (
@@ -78,6 +75,10 @@ export const CardhandPanel = () => {
             <Card card={card} onCardClick={cardClicked} />
           </div>
         ))}
+      </div>
+      <div css={cardhandPanelSideInner}>
+        <div css={dashboardButton} onClick={nextTurn}><FaPlay /></div>
+        <div css={populationButton}><IoPeopleCircle /><span>{population}</span></div>
       </div>
     </div>
   );

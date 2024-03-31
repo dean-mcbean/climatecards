@@ -8,7 +8,7 @@ import { Card } from "../types/cards";
 
 
 type GameloopState = {
-  status: string;
+  status: "idle" | "building" | "unlockCard";
   building?: Building;
   activeCard?: Card;
 };
@@ -32,7 +32,7 @@ export const GameloopContext = React.createContext<GameloopContextType>({
 });
 
 export const GameloopProvider = ({ children }: { children: ReactNode }) => {
-  const { turn, dayOfWeek } = useTimeContext();
+  const { turn, season } = useTimeContext();
   const { initDeck, refreshHand, addCardToDeck } = useCardContext();
   const {initGrid, updateGridItem, getPopulation} = useGameboardContext();
   const { setMouseTracking, setCursorIcon, setGameboardTileSelectionFilter, setOnGameboardTileSelection, createFundingFlyingCoins } = useUIContext();
@@ -91,13 +91,12 @@ export const GameloopProvider = ({ children }: { children: ReactNode }) => {
     setFunding((prev_funding) => prev_funding + pop);
     createFundingFlyingCoins();
 
-  }, [turn]);
-
-  useEffect(() => {
-    if (dayOfWeek === "Sunday") {
+    if (season == "Summer") {
+      // unlock card
       setGameState({ status: "unlockCard" });
     }
-  }, [dayOfWeek]);
+
+  }, [turn, season]);
 
   const contextValue = { 
     gameState, 

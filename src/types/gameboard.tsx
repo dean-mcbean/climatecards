@@ -10,9 +10,8 @@ export type Building = {
   health: number;
   maxHealth: number;
   icon: JSX.Element;
-  constructionTurns: number;
-  maxConstructionTurns: number;
   population?: number;
+  isUnderConstruction?: boolean;
 }
 
 export type GridItem = {

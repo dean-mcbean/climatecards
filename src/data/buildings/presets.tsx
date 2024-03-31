@@ -9,8 +9,6 @@ export const buildingPresets: Record<Building['type'], Building> = {
     health: 1,
     maxHealth: 1,
     icon: <FaHouse />,
-    constructionTurns: 4,
-    maxConstructionTurns: 4,
     population: 2,
   },
   "bach": {
@@ -18,8 +16,6 @@ export const buildingPresets: Record<Building['type'], Building> = {
     health: 1,
     maxHealth: 1,
     icon: <BsFillHouseHeartFill />,
-    constructionTurns: 6,
-    maxConstructionTurns: 6,
     population: 1,
   },
 }

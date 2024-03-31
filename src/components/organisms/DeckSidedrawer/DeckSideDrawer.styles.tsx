@@ -7,7 +7,7 @@ export const deckSideDrawerOverlay = (expanded: boolean) => css`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #13182f4d;
+  background-color: #13182f80;
   z-index: 999;
   pointer-events: ${expanded ? 'all' : 'none'};
   opacity: ${expanded ? 1 : 0};
@@ -17,20 +17,26 @@ export const deckSideDrawerOverlay = (expanded: boolean) => css`
 
 export const deckSideDrawer = (expanded: boolean) => css`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: ${expanded ? '80%' : '0'};
-  min-width: ${expanded ? '300px' : '0'};
-  height: 100%;
+  top: 5%;
+  left: 5%;
+  bottom: 5%;
+  right: 5%;
   background-color: #0f5a71;
   border-right: 1px solid #006d81;
   box-shadow: 0px 0px 20px 0px #00012d40;
-  transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out;
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
   will-change: width, min-width;
   z-index: 1000;
   overflow: hidden;
   color: white;
-  padding: 1rem;
+  padding: 1rem 2rem;
+  border-radius: 24px;
+  pointer-events: ${expanded ? 'all' : 'none'};
+  opacity: ${expanded ? 1 : 0};
+  transform: ${expanded ? 'translateY(0)' : 'translateY(100px)'};
+  transform-origin: bottom left;
+  display: flex;
+  flex-direction: column;
 
   > h1 {
     font-size: 3rem;
@@ -48,11 +54,26 @@ export const deckSideDrawer = (expanded: boolean) => css`
 `;
 
 export const deckSideDrawerCards = css`
-  display: flex;
-  flex-direction: row;
+  display: grid;
   gap: 1rem;
   margin-top: 2rem;
-  flex-wrap: wrap;
+  overflow-y: auto; 
+  flex-grow: 1;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: start;
+  justify-items: stretch;
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex-grow: 1;
+    flex-wrap: wrap;
+
+    > h2 {
+      width: 100%;
+    }
+  }
 `;
 
 export const deckSideDrawerCloseButton = css`
