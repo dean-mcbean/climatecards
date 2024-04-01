@@ -2,7 +2,7 @@
 
 import { useTimeContext } from "../../../../context/TimeProvider";
 import { GridItem } from "../../../../types/gameboard";
-import { GameboardTileContainer, buildingContainer, buildingHealth, buildingHealthPip, buildingShadow, gameboardTile, gameboardTileDepth, inundationBuilding, inundationContainer, inundationCountdown, selectionContainer, warningContainer, waveContainer } from "./GameboardTile.styles";
+import { GameboardTileContainer, buildingContainer, buildingHealth, buildingHealthPip, buildingShadow, gameboardTile, gameboardTileDepth, gridItemColor, gridItemShadowColor, inundationBuilding, inundationContainer, inundationCountdown, selectionContainer, warningContainer, waveContainer } from "./GameboardTile.styles";
 import { MdTsunami } from "react-icons/md";
 import { GiEdgeCrack } from "react-icons/gi";
 import { useHazardContext } from "../../../../context/HazardProvider";
@@ -16,8 +16,10 @@ import { Countdown } from "../../../atoms/Countdown/Countdown";
 import { palette } from "../../../../theme/palette";
 import { FaDroplet } from "react-icons/fa6";
 import { TileNeighbors } from "../Gameboard";
-import { getRoundedCornersFromNeighbours } from "./utils";
+import { getProjectedRoundedCornersFromNeighbours, getRoundedCornersFromNeighbours } from "./utils";
+import { svgPathBuilder } from "../../../../utils/svg";
 
+export const tileExtrusion = 14;
 
 export const GameboardTile = ({gridItem, neighbors}: {gridItem: GridItem, neighbors: TileNeighbors}) => {
 
@@ -138,6 +140,14 @@ export const GameboardTile = ({gridItem, neighbors}: {gridItem: GridItem, neighb
   }
   , [gridItem, neighbors]);
 
+  const projectedRoundedCorners = useMemo(() => {
+    return getProjectedRoundedCornersFromNeighbours(gridItem, neighbors);
+  }
+  , [gridItem, neighbors]);
+
+  const TE = tileExtrusion;
+  const TW = tileWidth;
+
   return (
     <div css={GameboardTileContainer(tileWidth)}>
       <div className="gameboard-tile" aria-rowindex={gridItem.y} aria-colindex={gridItem.x} css={gameboardTile(gridItem, roundedCorners)}>
@@ -146,9 +156,47 @@ export const GameboardTile = ({gridItem, neighbors}: {gridItem: GridItem, neighb
         {inundation}
         {warning}
         {selection}
+        <svg height={tileWidth} width={tileWidth} css={{position: `absolute`, top: -TE, left: 0}}>
+        {projectedRoundedCorners.topLeft && neighbors.top && 
+        <>
+          {svgPathBuilder().moveTo(0, 0).lineTo(TE, 0).arc(TE, TE, 0, 0, 0, 0, TE).fillColor(gridItemColor(neighbors.top)).getSVGString()}
+          {svgPathBuilder().moveTo(0, TE).lineTo(TE, TE).arc(TE, TE, 0, 0, 0, 0, TE * 2).fillColor(gridItemShadowColor(neighbors.top)).getSVGString()
+          }
+        </>
+        }
+        {projectedRoundedCorners.topRight && neighbors.top &&
+        <>
+          {svgPathBuilder().moveTo(TW, 0).lineTo(TW - TE, 0).arc(TE, TE, 0, 0, 1, TW, TE).fillColor(gridItemColor(neighbors.top)).getSVGString()}
+          {svgPathBuilder().moveTo(TW, TE).lineTo(TW - TE, TE).arc(TE, TE, 0, 0, 1, TW, TE * 2).fillColor(gridItemShadowColor(neighbors.top)).getSVGString()
+          }
+        </>
+        }
+        {projectedRoundedCorners.bottomLeft && neighbors.bottom &&
+        <>
+          {svgPathBuilder().moveTo(0, TW).lineTo(0, TW - TE).arc(TE, TE, 0, 0, 0, TE, TW).fillColor(gridItemColor(neighbors.bottom)).getSVGString()}
+        </>
+        }
+        {projectedRoundedCorners.bottomRight && neighbors.bottom &&
+        <>
+          {svgPathBuilder().moveTo(TW, TW).lineTo(TW, TW - TE).arc(TE, TE, 0, 0, 1, TW - TE, TW).fillColor(gridItemColor(neighbors.bottom)).getSVGString()}
+        </>
+        }
+        </svg>
         <Countdown {...countdown}/>
       </div>
-      <div css={gameboardTileDepth(gridItem, roundedCorners)}>
+      <div css={gameboardTileDepth(gridItem, roundedCorners, neighbors.bottom)}>
+        <svg height={tileWidth} width={tileWidth} css={{position: `absolute`, bottom: 0, left: 0}}>
+        {roundedCorners.bottomRight && neighbors.bottom &&
+        <>
+          {svgPathBuilder().moveTo(TW, TW).lineTo(TW, TW - TE).arc(TE, TE, 0, 0, 1, TW - TE, TW).fillColor(gridItemColor(neighbors.bottom)).getSVGString()}
+        </>
+        }
+        {roundedCorners.bottomLeft && neighbors.bottom &&
+        <>
+          {svgPathBuilder().moveTo(0, TW).lineTo(0, TW - TE).arc(TE, TE, 0, 0, 0, TE, TW).fillColor(gridItemColor(neighbors.bottom)).getSVGString()}
+        </>
+        }
+        </svg>
       </div>
     </div>
   );

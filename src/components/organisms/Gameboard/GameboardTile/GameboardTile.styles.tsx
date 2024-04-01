@@ -2,6 +2,7 @@ import { css, keyframes } from "@emotion/react";
 import { GridItem, GridItemWarning } from "../../../../types/gameboard";
 import { palette } from "../../../../theme/palette";
 import { RoundedCorners, measureElevationOfGridItem } from "./utils";
+import { tileExtrusion } from "./GameboardTile";
 
 export function gridItemColor(gridItem: GridItem) {
   return gridItem.isWater ? palette.blue(500) : gridItem.isRaised ? '#82A771' : '#99cb82';
@@ -62,31 +63,33 @@ export const gameboardTile = (gridItem: GridItem, roundedCorners: RoundedCorners
   background-color: ${gridItemColor(gridItem)};
   z-index: 2;
   position: relative;
-  top: ${measureElevationOfGridItem(gridItem) * -10}px;
+  top: ${measureElevationOfGridItem(gridItem) * -tileExtrusion}px;
   transition: top 0.5s ease-in-out, background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-  ${roundedCorners.topLeft ? 'border-top-left-radius: 8px;' : ''}
-  ${roundedCorners.topRight ? 'border-top-right-radius: 8px;' : ''}
-  ${roundedCorners.bottomLeft ? 'border-bottom-left-radius: 8px;' : ''}
-  ${roundedCorners.bottomRight ? 'border-bottom-right-radius: 8px;' : ''}
+  ${roundedCorners.topLeft ? 'border-top-left-radius: ' + tileExtrusion + 'px;' : ''}
+  ${roundedCorners.topRight ? 'border-top-right-radius: ' + tileExtrusion + 'px;' : ''}
+  ${roundedCorners.bottomLeft ? 'border-bottom-left-radius: ' + tileExtrusion + 'px;' : ''}
+  ${roundedCorners.bottomRight ? 'border-bottom-right-radius: ' + tileExtrusion + 'px;' : ''}
 `;
 
-export const gameboardTileDepth = (gridItem: GridItem, roundedCorners: RoundedCorners) => css`
+export const gameboardTileDepth = (gridItem: GridItem, roundedCorners: RoundedCorners, bottomNeighbour?: GridItem) => {
+  const diff = measureElevationOfGridItem(gridItem) - measureElevationOfGridItem(bottomNeighbour);
+  
+  return css`
   width: 100%;
-  height: 100%;
+  height: ${(diff + 1) * tileExtrusion}px;
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 12px;
-  top: ${(measureElevationOfGridItem(gridItem) - 1) * -10}px;
+  bottom: ${measureElevationOfGridItem(bottomNeighbour) * tileExtrusion}px;
   background-color: ${gridItemShadowColor(gridItem)};
   z-index: 1;
   transition: background-color 0.2s ease-in-out;
-  ${roundedCorners.topLeft ? 'border-top-left-radius: 8px;' : ''}
-  ${roundedCorners.topRight ? 'border-top-right-radius: 8px;' : ''}
-  ${roundedCorners.bottomLeft ? 'border-bottom-left-radius: 8px;' : ''}
-  ${roundedCorners.bottomRight ? 'border-bottom-right-radius: 8px;' : ''}
+  ${roundedCorners.bottomLeft ? 'border-bottom-left-radius: ' + tileExtrusion + 'px;' : ''}
+  ${roundedCorners.bottomRight ? 'border-bottom-right-radius: ' + tileExtrusion + 'px;' : ''}
 `;
+}
 
 export const buildingShadow = (gridItem: GridItem) => css`
   position: absolute;
@@ -281,3 +284,4 @@ export const selectionContainer = (highlight: string) => {
   }
 `;
 }
+
