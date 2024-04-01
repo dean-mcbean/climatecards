@@ -1,9 +1,14 @@
 import { css, keyframes } from "@emotion/react";
 import { GridItem, GridItemWarning } from "../../../../types/gameboard";
 import { palette } from "../../../../theme/palette";
+import { RoundedCorners, measureElevationOfGridItem } from "./utils";
 
-export function gridItemColor(gridItem: GridItem, shade: number = 500) {
-  return gridItem.isWater ? palette.blue(shade) : gridItem.isRaised ? palette.green(shade * 1.1) : palette.green(shade);
+export function gridItemColor(gridItem: GridItem) {
+  return gridItem.isWater ? palette.blue(500) : gridItem.isRaised ? '#82A771' : '#99cb82';
+}
+
+export function gridItemShadowColor(gridItem: GridItem) {
+  return gridItem.isWater ? palette.blue(600) : gridItem.isRaised ? '#4c825b' : '#6bb580';
 }
 
 export const GameboardTileContainer = (tileWidth: number) => css`
@@ -47,7 +52,7 @@ export const buildingContainer = css`
   }
 `;
 
-export const gameboardTile = (gridItem: GridItem) => css`
+export const gameboardTile = (gridItem: GridItem, roundedCorners: RoundedCorners) => css`
   width: 100%;
   height: 100%;
   display: flex;
@@ -55,15 +60,17 @@ export const gameboardTile = (gridItem: GridItem) => css`
   align-items: center;
   font-size: 12px;
   background-color: ${gridItemColor(gridItem)};
-  box-shadow: inset 0 0 1px 1px ${gridItemColor(gridItem, 530)}, inset -2px 2px 4px 0px ${gridItemColor(gridItem, 470)},  inset 2px -2px 4px 0px ${gridItemColor(gridItem, 520)};
-  border-radius: 2px;
   z-index: 2;
   position: relative;
-  top: ${gridItem.isRaised ? '-20px' : gridItem.isWater ? '0' : '-10px'};
+  top: ${measureElevationOfGridItem(gridItem) * -10}px;
   transition: top 0.5s ease-in-out, background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+  ${roundedCorners.topLeft ? 'border-top-left-radius: 8px;' : ''}
+  ${roundedCorners.topRight ? 'border-top-right-radius: 8px;' : ''}
+  ${roundedCorners.bottomLeft ? 'border-bottom-left-radius: 8px;' : ''}
+  ${roundedCorners.bottomRight ? 'border-bottom-right-radius: 8px;' : ''}
 `;
 
-export const gameboardTileDepth = (gridItem: GridItem) => css`
+export const gameboardTileDepth = (gridItem: GridItem, roundedCorners: RoundedCorners) => css`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -71,16 +78,21 @@ export const gameboardTileDepth = (gridItem: GridItem) => css`
   justify-content: center;
   align-items: center;
   font-size: 12px;
-  background-color: ${gridItemColor(gridItem, 580)};
+  top: ${(measureElevationOfGridItem(gridItem) - 1) * -10}px;
+  background-color: ${gridItemShadowColor(gridItem)};
   z-index: 1;
   transition: background-color 0.2s ease-in-out;
+  ${roundedCorners.topLeft ? 'border-top-left-radius: 8px;' : ''}
+  ${roundedCorners.topRight ? 'border-top-right-radius: 8px;' : ''}
+  ${roundedCorners.bottomLeft ? 'border-bottom-left-radius: 8px;' : ''}
+  ${roundedCorners.bottomRight ? 'border-bottom-right-radius: 8px;' : ''}
 `;
 
 export const buildingShadow = (gridItem: GridItem) => css`
   position: absolute;
   width: 55%;
   height: 28%;
-  background-color: ${gridItemColor(gridItem, 550)};
+  background-color: ${gridItemShadowColor(gridItem)};
   z-index: 3;
   border-radius: 50px;
   bottom: 15%;

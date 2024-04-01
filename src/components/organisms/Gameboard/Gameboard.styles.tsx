@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { gridItemColor } from "./GameboardTile/GameboardTile.styles";
+import { gridItemColor, gridItemShadowColor } from "./GameboardTile/GameboardTile.styles";
 import { palette } from "../../../theme/palette";
 
 export const gameboardContainer = css`
@@ -43,7 +43,7 @@ export const depthItem = (gridItem: any, tileWidth: number) => css`
   justify-content: center;
   align-items: center;
   font-size: 12px;
-  background-color: ${gridItemColor(gridItem, 580)};
+  background-color: ${gridItemShadowColor(gridItem)};
   box-shadow: inset 0 -60px 45px -60px #0138;
 `;
 

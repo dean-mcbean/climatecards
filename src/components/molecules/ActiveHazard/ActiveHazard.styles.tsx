@@ -4,10 +4,9 @@ import { palette } from "../../../theme/palette";
 export const activeHazardContainer = css`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  height: 83px;
-  padding: 0rem 2rem 0rem 2rem;
+  padding: 0.5rem 2rem 0rem 2rem;
 `;
 
 export const activeHazardHeader = (isHazard: boolean) => css`
@@ -18,7 +17,7 @@ export const activeHazardHeader = (isHazard: boolean) => css`
   justify-content: center;
   color: ${isHazard ? palette.blue(700) : palette.blue(500)};
   transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
-  font-size: 2.7rem;
+  font-size: 3rem;
   font-family: "Baloo Bhaina 2", cursive;
   font-weight: 500;
 

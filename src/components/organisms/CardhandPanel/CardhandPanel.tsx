@@ -77,7 +77,7 @@ export const CardhandPanel = () => {
         ))}
       </div>
       <div css={cardhandPanelSideInner}>
-        <div css={dashboardButton} onClick={nextTurn}><FaPlay /></div>
+        <div css={dashboardButton} onClick={nextTurn}><FaPlay style={{marginLeft: '10px', width: '75px'}} /></div>
         <div css={populationButton}><IoPeopleCircle /><span>{population}</span></div>
       </div>
     </div>

@@ -15,9 +15,11 @@ import { LuConstruction } from "react-icons/lu";
 import { Countdown } from "../../../atoms/Countdown/Countdown";
 import { palette } from "../../../../theme/palette";
 import { FaDroplet } from "react-icons/fa6";
+import { TileNeighbors } from "../Gameboard";
+import { getRoundedCornersFromNeighbours } from "./utils";
 
 
-export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
+export const GameboardTile = ({gridItem, neighbors}: {gridItem: GridItem, neighbors: TileNeighbors}) => {
 
   const { turn } = useTimeContext();
   const { gameState } = useGameloopContext();
@@ -131,9 +133,14 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
 
   }, [turn]);
 
+  const roundedCorners = useMemo(() => {
+    return getRoundedCornersFromNeighbours(gridItem, neighbors);
+  }
+  , [gridItem, neighbors]);
+
   return (
     <div css={GameboardTileContainer(tileWidth)}>
-      <div className="gameboard-tile" aria-rowindex={gridItem.y} aria-colindex={gridItem.x} css={gameboardTile(gridItem)}>
+      <div className="gameboard-tile" aria-rowindex={gridItem.y} aria-colindex={gridItem.x} css={gameboardTile(gridItem, roundedCorners)}>
         {wave}
         {building}
         {inundation}
@@ -141,7 +148,7 @@ export const GameboardTile = ({gridItem}: {gridItem: GridItem}) => {
         {selection}
         <Countdown {...countdown}/>
       </div>
-      <div css={gameboardTileDepth(gridItem)}>
+      <div css={gameboardTileDepth(gridItem, roundedCorners)}>
       </div>
     </div>
   );

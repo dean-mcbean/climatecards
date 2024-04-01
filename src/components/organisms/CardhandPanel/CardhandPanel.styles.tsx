@@ -10,6 +10,8 @@ export const CardhandPanelContainer = css`
   align-items: stretch;
   gap: 0.5rem;
   position: relative;
+  background: linear-gradient(0deg, #0f5a71, #0f7899);
+  box-shadow: inset 0 7px 2px -5px #92e2ff38, inset 0 -8px 15px 0px #00425f4a;
 `;
 
 export const cardhandPanelInner = css`
@@ -30,7 +32,7 @@ export const dashboardButton = css`
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: #1e758f;
+  color: #00445980;
   cursor: pointer;
   transition: color 0.1s ease-in-out, transform 0.1s ease-in-out;
   font-family: "Baloo Bhaina 2", cursive;
@@ -42,13 +44,13 @@ export const dashboardButton = css`
   transform: scale(1);
 
   &:hover {
-    color: #0f5a71;
+    color: #004459;
     transform: scale(1.1);
   }
 
   svg {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
   }
 `;
 
@@ -196,14 +198,15 @@ export const cardContainer = (index: number, shouldCollapse: boolean, canAfford:
 export const cardhandPanelSideInner = css`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-evenly;
   align-items: center;
   flex-wrap: nowrap;
   overflow: visible;
-  padding: 1rem 1rem;
+  padding: 1rem 0;
   box-sizing: border-box;
   flex-grow: 0;
   width: 310px;
   gap: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 3rem;
+  height: 100%;
 `;

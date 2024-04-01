@@ -21,9 +21,9 @@ export const deckSideDrawer = (expanded: boolean) => css`
   left: 5%;
   bottom: 5%;
   right: 5%;
-  background-color: #0f5a71;
+  background: linear-gradient(0deg, #0f5a71, #0f7899);
+  box-shadow: inset 0 7px 2px -5px #92e2ff38, inset 0 -8px 15px 0px #00425f4a, 0px 0px 20px 0px #00012d40;
   border-right: 1px solid #006d81;
-  box-shadow: 0px 0px 20px 0px #00012d40;
   transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
   will-change: width, min-width;
   z-index: 1000;
