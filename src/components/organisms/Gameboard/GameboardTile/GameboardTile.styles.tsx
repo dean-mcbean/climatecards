@@ -5,7 +5,7 @@ import { RoundedCorners, measureElevationOfGridItem } from "./utils";
 import { tileExtrusion } from "./GameboardTile";
 
 export function gridItemColor(gridItem: GridItem) {
-  return gridItem.isWater ? palette.blue(500) : gridItem.isRaised ? '#82A771' : '#99cb82';
+  return gridItem.isWater ? palette.blue(500) : gridItem.isRaised ? '#62a875' : '#99cb82';
 }
 
 export function gridItemShadowColor(gridItem: GridItem) {

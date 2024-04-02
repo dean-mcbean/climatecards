@@ -19,7 +19,7 @@ import { TileNeighbors } from "../Gameboard";
 import { getProjectedRoundedCornersFromNeighbours, getRoundedCornersFromNeighbours } from "./utils";
 import { svgPathBuilder } from "../../../../utils/svg";
 
-export const tileExtrusion = 14;
+export const tileExtrusion = 12;
 
 export const GameboardTile = ({gridItem, neighbors}: {gridItem: GridItem, neighbors: TileNeighbors}) => {
 
@@ -148,6 +148,37 @@ export const GameboardTile = ({gridItem, neighbors}: {gridItem: GridItem, neighb
   const TE = tileExtrusion;
   const TW = tileWidth;
 
+  // Build beach
+  const topIsBeach = gridItem.isWater && neighbors.top && !neighbors.top.isWater;
+  let beachSVG = null;
+  if (topIsBeach) {
+    const leftBeach = svgPathBuilder()
+    const midBeach = svgPathBuilder()
+    const rightBeach = svgPathBuilder()
+    if (projectedRoundedCorners.topLeft) {
+      leftBeach.moveTo(0, TE + TE).arc(TE, TE, 0, 0, 1, TE, TE / 2 + TE / 2).lineTo(TE, TE + TE / 2).arc(TE, TE, 0, 0, 0, 0, TE * 2 + TE / 2).fillColor('#fac2a2');
+    } else {
+      leftBeach.moveTo(0, TE).lineTo(TE, TE).lineTo(TE, TE + TE / 2).lineTo(0, TE + TE / 2).fillColor('#fac2a2');
+    }
+    midBeach.moveTo(TE, TE).lineTo(TW - TE, TE).lineTo(TW - TE, TE + TE / 2).lineTo(TE, TE + TE / 2).fillColor('#fac2a2');
+    if (projectedRoundedCorners.topRight) {
+      rightBeach.moveTo(TW, TE + TE).arc(TE, TE, 0, 0, 0, TW - TE, TE).lineTo(TW - TE, TE + TE / 2).arc(TE, TE, 0, 0, 1, TW, TE * 2 + TE / 2).fillColor('#fac2a2');
+    } else if (neighbors.topRight?.isWater) {
+      rightBeach.moveTo(TW, 0).arc(TE, TE, 0, 0, 1, TW - TE, TE).lineTo(TW - TE, TE + TE / 2).arc(TE, TE, 0, 0, 0, TW, 0).fillColor('#fac2a2');
+    } else {
+      rightBeach.moveTo(TW - TE, TE).lineTo(TW, TE).lineTo(TW, TE + TE / 2).lineTo(TW - TE, TE + TE / 2).fillColor('#fac2a2');
+    }
+
+
+    beachSVG = (
+      <>
+        {leftBeach.getSVGString()}
+        {midBeach.getSVGString()}
+        {rightBeach.getSVGString()}
+      </>
+    );
+  }
+
   return (
     <div css={GameboardTileContainer(tileWidth)}>
       <div className="gameboard-tile" aria-rowindex={gridItem.y} aria-colindex={gridItem.x} css={gameboardTile(gridItem, roundedCorners)}>
@@ -181,21 +212,30 @@ export const GameboardTile = ({gridItem, neighbors}: {gridItem: GridItem, neighb
           {svgPathBuilder().moveTo(TW, TW).lineTo(TW, TW - TE).arc(TE, TE, 0, 0, 1, TW - TE, TW).fillColor(gridItemColor(neighbors.bottom)).getSVGString()}
         </>
         }
+        {beachSVG}
         </svg>
         <Countdown {...countdown}/>
       </div>
       <div css={gameboardTileDepth(gridItem, roundedCorners, neighbors.bottom)}>
         <svg height={tileWidth} width={tileWidth} css={{position: `absolute`, bottom: 0, left: 0}}>
-        {roundedCorners.bottomRight && neighbors.bottom &&
+        {roundedCorners.bottomRight && (neighbors.bottom ?
         <>
           {svgPathBuilder().moveTo(TW, TW).lineTo(TW, TW - TE).arc(TE, TE, 0, 0, 1, TW - TE, TW).fillColor(gridItemColor(neighbors.bottom)).getSVGString()}
         </>
-        }
-        {roundedCorners.bottomLeft && neighbors.bottom &&
+        : neighbors.right &&
+        <>
+          {svgPathBuilder().moveTo(TW, TW).lineTo(TW, TW - TE).lineTo(TW - TE, TW).fillColor(gridItemShadowColor(gridItem)).getSVGString()}
+        </>
+        )}
+        {roundedCorners.bottomLeft && (neighbors.bottom ?
         <>
           {svgPathBuilder().moveTo(0, TW).lineTo(0, TW - TE).arc(TE, TE, 0, 0, 0, TE, TW).fillColor(gridItemColor(neighbors.bottom)).getSVGString()}
         </>
-        }
+        : neighbors.left &&
+        <>
+          {svgPathBuilder().moveTo(0, TW).lineTo(0, TW - TE).lineTo(TE, TW).fillColor(gridItemShadowColor(gridItem)).getSVGString()}
+        </>
+        )}
         </svg>
       </div>
     </div>
