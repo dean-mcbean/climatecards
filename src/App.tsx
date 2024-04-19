@@ -8,6 +8,8 @@ import { GameloopProvider } from "./context/GameloopProvider";
 import { HazardProvider } from "./context/HazardProvider";
 import { TimeProvider } from "./context/TimeProvider";
 import { UIProvider } from "./context/UIProvider";
+import { JPArtboard } from "./libraries/jpart";
+import { JPGameBoard } from "./libraries/jpiso/JPGameBoard";
 
 
 export default function App() {
@@ -18,7 +20,9 @@ export default function App() {
           <HazardProvider>
             <CardProvider>
               <GameloopProvider>
-                <MainGame />
+                {//<MainGame />
+}
+                <JPGameBoard  />
                 <DeckSideDrawer />
               </GameloopProvider>
             </CardProvider>
